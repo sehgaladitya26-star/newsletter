@@ -305,117 +305,13 @@
   .tilt-btn:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
 
 
-  /* ---------- reel deck ---------- */
-  .reels { overflow-x: clip; }
-  .deck {
-    display: grid;
-    margin: 0 auto 34px;
-    max-width: 420px;
-    outline: none;
-  }
-  .deck:focus-visible { outline: 2px solid var(--air-red); outline-offset: 6px; border-radius: 8px; }
-  .deck-card {
-    grid-area: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border: 1px solid #d9dde3;
-    border-radius: 8px;
-    box-shadow: 0 1px 2px rgba(20,28,50,.08), 0 8px 24px rgba(20,28,50,.12);
-    overflow: hidden;
-    transform-origin: 50% 100%;
-    transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
-    will-change: transform;
-  }
-  .deck-embed {
-    position: relative;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 8px 8px 0;
-  }
-  .deck-card .instagram-media {
-    margin: 0 auto !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-shadow: none !important;
-    border: 0 !important;
-  }
-  .deck-shield {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    touch-action: pan-y;
-    cursor: grab;
-  }
-  .deck-shield[hidden] { display: none; }
-  .deck-rail {
-    position: absolute;
-    z-index: 3;
-    top: 72px;
-    bottom: 34%;
-    width: 15%;
-    display: flex;
-    align-items: center;
-    touch-action: pan-y;
-    cursor: grab;
-  }
-  .deck-rail.prev { left: 0; justify-content: flex-start; padding-left: 6px; }
-  .deck-rail.next { right: 0; justify-content: flex-end; padding-right: 6px; }
-  .deck-rail::before {
-    content: "";
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(20, 28, 50, .45) no-repeat center / 14px 14px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
-    box-shadow: 0 1px 4px rgba(0,0,0,.25);
-  }
-  .deck-rail.next::before { transform: scaleX(-1); }
-  .deck-grip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px 16px;
-    border-top: 1px dashed #d9dde3;
-    font-size: 14px;
-    color: #6b7080;
-    touch-action: pan-y;
-    cursor: grab;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  .deck-grip::after {
-    content: "";
-    width: 28px;
-    height: 10px;
-    background: repeating-linear-gradient(90deg, #b7bcc6 0 2px, transparent 2px 6px);
-    border-radius: 2px;
-    flex: none;
-  }
-  .deck.dragging, .deck.dragging * { cursor: grabbing; }
-  .deck-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    margin: 0;
-  }
-  .deck-nav button {
-    font: 600 15px/1 var(--serif);
-    color: var(--air-blue);
-    background: none;
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    padding: 10px 18px;
-    cursor: pointer;
-  }
-  .deck-nav button:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
-  .deck-count { color: var(--pencil); font-size: 14px; min-width: 4.5em; text-align: center; }
-  @media (prefers-reduced-motion: reduce) {
-    .deck-card { transition-duration: .15s; }
+  /* song of this edition */
+  .song-frame {
+    display: block;
+    width: 100%;
+    height: 152px;
+    border: 0;
+    border-radius: 12px;
   }
 
   /* embeds */
@@ -508,6 +404,17 @@
     <p class="signoff">x</p>
   </section>
 
+  <section aria-labelledby="song-title">
+    <h2 id="song-title">Song of this edition</h2>
+    <!-- To change the song: in Spotify, Share > Copy Song Link, then put the ID
+         (the part after /track/ and before any ?) in place of the ID in the link below. -->
+    <iframe class="song-frame"
+      src="https://open.spotify.com/embed/track/3SdTKo2uVsxFblQjpScoHy?utm_source=generator"
+      title="Song of this edition on Spotify"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"></iframe>
+  </section>
+
   <section aria-labelledby="highlight-title">
     <h2 id="highlight-title">This edition's highlight</h2>
     <figure class="snapshot">
@@ -551,75 +458,37 @@
     </div>
   </section>
 
-  <section class="reels" aria-labelledby="reels-title">
+  <section aria-labelledby="reels-title">
     <h2 id="reels-title">Reels I saved for you</h2>
 
-    <div class="deck" id="deck" tabindex="0" aria-roledescription="deck" aria-label="Saved reels. Swipe, or use the left and right arrow keys.">
-      <article class="deck-card">
-        <div class="deck-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DboKxIcTk8D/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DboKxIcTk8D/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
         <a class="fallback" href="https://www.instagram.com/reel/DboKxIcTk8D/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Negi (@negimaanvi)</span></a>
       </blockquote>
-          <div class="deck-shield" aria-hidden="true"></div>
-          <div class="deck-rail prev" aria-hidden="true"></div>
-          <div class="deck-rail next" aria-hidden="true"></div>
-        </div>
-        <div class="deck-grip">@negimaanvi</div>
-      </article>
-
-      <article class="deck-card">
-        <div class="deck-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdjYeLGBHgG/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdjYeLGBHgG/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Jayesh Udhwani (@wordsteal)</span></a>
-      </blockquote>
-          <div class="deck-shield" aria-hidden="true"></div>
-          <div class="deck-rail prev" aria-hidden="true"></div>
-          <div class="deck-rail next" aria-hidden="true"></div>
-        </div>
-        <div class="deck-grip">@wordsteal</div>
-      </article>
-
-      <article class="deck-card">
-        <div class="deck-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdjXWI5POeQ/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdjXWI5POeQ/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Sahil Jeet Singh (@sahiljeetofficial)</span></a>
-      </blockquote>
-          <div class="deck-shield" aria-hidden="true"></div>
-          <div class="deck-rail prev" aria-hidden="true"></div>
-          <div class="deck-rail next" aria-hidden="true"></div>
-        </div>
-        <div class="deck-grip">@sahiljeetofficial</div>
-      </article>
-
-      <article class="deck-card">
-        <div class="deck-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DdYQwJ2qQ4n/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/p/DdYQwJ2qQ4n/" target="_blank" rel="noopener">View this post on Instagram<span>A post shared by Katterpillar (@katterpillar)</span></a>
-      </blockquote>
-          <div class="deck-shield" aria-hidden="true"></div>
-          <div class="deck-rail prev" aria-hidden="true"></div>
-          <div class="deck-rail next" aria-hidden="true"></div>
-        </div>
-        <div class="deck-grip">@katterpillar</div>
-      </article>
-
-      <article class="deck-card">
-        <div class="deck-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DaAOh5SRWIL/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DaAOh5SRWIL/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Maya Lai (@mayalaiharpist)</span></a>
-      </blockquote>
-          <div class="deck-shield" aria-hidden="true"></div>
-          <div class="deck-rail prev" aria-hidden="true"></div>
-          <div class="deck-rail next" aria-hidden="true"></div>
-        </div>
-        <div class="deck-grip">@mayalaiharpist</div>
-      </article>
     </div>
 
-    <div class="deck-nav">
-      <button type="button" id="deck-prev">Back</button>
-      <span class="deck-count" id="deck-count" aria-live="polite">1 of 5</span>
-      <button type="button" id="deck-next">Next</button>
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdjYeLGBHgG/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdjYeLGBHgG/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Jayesh Udhwani (@wordsteal)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdjXWI5POeQ/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdjXWI5POeQ/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Sahil Jeet Singh (@sahiljeetofficial)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DdYQwJ2qQ4n/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/p/DdYQwJ2qQ4n/" target="_blank" rel="noopener">View this post on Instagram<span>A post shared by Katterpillar (@katterpillar)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DaAOh5SRWIL/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DaAOh5SRWIL/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Maya Lai (@mayalaiharpist)</span></a>
+      </blockquote>
     </div>
 
     <p class="scrawl honest">It ain't much but it's honest work</p>
@@ -782,129 +651,6 @@
     // Android and others: starts straight away (needs https)
     window.addEventListener('deviceorientation', onOrient);
   }
-})();
-</script>
-<script>
-(function () {
-  var deck = document.getElementById('deck');
-  if (!deck) return;
-  var cards = Array.prototype.slice.call(deck.querySelectorAll('.deck-card'));
-  var n = cards.length;
-  var order = cards.map(function (_, i) { return i; });
-  var countEl = document.getElementById('deck-count');
-  var busy = false;
-
-  function top() { return cards[order[0]]; }
-
-  function layout() {
-    order.forEach(function (ci, pos) {
-      var c = cards[ci];
-      var p = Math.min(pos, 3);
-      c.style.zIndex = n - pos;
-      c.style.transform = 'translateY(' + (p * 14) + 'px) scale(' + (1 - p * 0.05) + ')';
-      c.style.opacity = pos < 3 ? 1 : 0;
-      var isTop = pos === 0;
-      c.inert = !isTop;
-      c.setAttribute('aria-hidden', isTop ? 'false' : 'true');
-      if (!isTop) {
-        var sh = c.querySelector('.deck-shield');
-        if (sh.hidden) {
-          sh.hidden = false;
-          var f = c.querySelector('iframe');
-          if (f) f.src = f.src;          // stops a reel that was playing
-        }
-      }
-    });
-    countEl.textContent = (order[0] + 1) + ' of ' + n;
-  }
-
-  function flyOut(dir) {
-    if (busy) return;
-    busy = true;
-    var c = top();
-    var w = deck.getBoundingClientRect().width;
-    c.style.transition = 'transform .35s ease-in';
-    c.style.transform = 'translateX(' + (dir * w * 1.25) + 'px) rotate(' + (dir * 16) + 'deg)';
-    setTimeout(function () {
-      c.style.transition = '';
-      order.push(order.shift());
-      c.style.zIndex = 0;
-      layout();                       // it tucks itself in at the back
-      setTimeout(function () { busy = false; }, 120);
-    }, 340);
-  }
-
-  function back() {
-    if (busy) return;
-    busy = true;
-    order.unshift(order.pop());
-    var c = top();
-    var w = deck.getBoundingClientRect().width;
-    c.style.transition = 'none';
-    c.style.zIndex = n + 1;
-    c.style.transform = 'translateX(' + (-w * 1.25) + 'px) rotate(-16deg)';
-    c.getBoundingClientRect();       // commit the start position
-    c.style.transition = '';
-    layout();
-    setTimeout(function () { busy = false; }, 400);
-  }
-
-  document.getElementById('deck-next').addEventListener('click', function () { flyOut(-1); });
-  document.getElementById('deck-prev').addEventListener('click', back);
-  deck.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight') { e.preventDefault(); flyOut(1); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); flyOut(-1); }
-  });
-
-  /* ---- swiping ---- */
-  var drag = null;
-  deck.addEventListener('pointerdown', function (e) {
-    if (busy || (e.pointerType === 'mouse' && e.button !== 0)) return;
-    var handle = e.target.closest('.deck-shield, .deck-grip, .deck-rail');
-    if (!handle || handle.closest('.deck-card') !== top()) return;
-    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0, t: performance.now(),
-             lastX: e.clientX, lastT: performance.now(), v: 0, handle: handle, moved: false };
-    handle.setPointerCapture(e.pointerId);
-  });
-  deck.addEventListener('pointermove', function (e) {
-    if (!drag || e.pointerId !== drag.id) return;
-    drag.dx = e.clientX - drag.x;
-    drag.dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(drag.dx) < 6) return;
-    if (!drag.moved) { drag.moved = true; deck.classList.add('dragging'); }
-    var now = performance.now();
-    drag.v = (e.clientX - drag.lastX) / Math.max(1, now - drag.lastT);
-    drag.lastX = e.clientX; drag.lastT = now;
-    var c = top();
-    c.style.transition = 'none';
-    c.style.transform = 'translate(' + drag.dx + 'px,' + (drag.dy * 0.15) + 'px) rotate(' + (drag.dx * 0.05) + 'deg)';
-  });
-  function end(e, cancelled) {
-    if (!drag || e.pointerId !== drag.id) return;
-    var d = drag; drag = null;
-    deck.classList.remove('dragging');
-    var c = top();
-    c.style.transition = '';
-    if (!d.moved) {
-      if (cancelled) return;
-      if (d.handle.classList.contains('deck-rail')) {
-        // tapping an edge arrow moves through the deck
-        if (d.handle.classList.contains('next')) flyOut(-1); else back();
-      } else if (d.handle.classList.contains('deck-shield')) {
-        d.handle.hidden = true;          // lift the layer so the reel itself can be played
-      }
-      return;
-    }
-    if (!cancelled && (Math.abs(d.dx) > 90 || Math.abs(d.v) > 0.5)) {
-      flyOut(d.dx > 0 ? 1 : -1);
-    } else {
-      layout();                       // not far enough: settle back
-    }
-  }
-  deck.addEventListener('pointerup', function (e) { end(e, false); });
-  deck.addEventListener('pointercancel', function (e) { end(e, true); });
-
-  layout();
 })();
 </script>
 <script async src="https://www.instagram.com/embed.js"></script>
