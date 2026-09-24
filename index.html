@@ -350,6 +350,29 @@
     cursor: grab;
   }
   .deck-shield[hidden] { display: none; }
+  .deck-rail {
+    position: absolute;
+    z-index: 3;
+    top: 72px;
+    bottom: 34%;
+    width: 15%;
+    display: flex;
+    align-items: center;
+    touch-action: pan-y;
+    cursor: grab;
+  }
+  .deck-rail.prev { left: 0; justify-content: flex-start; padding-left: 6px; }
+  .deck-rail.next { right: 0; justify-content: flex-end; padding-right: 6px; }
+  .deck-rail::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(20, 28, 50, .45) no-repeat center / 14px 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+  .deck-rail.next::before { transform: scaleX(-1); }
   .deck-grip {
     display: flex;
     align-items: center;
@@ -538,6 +561,8 @@
         <a class="fallback" href="https://www.instagram.com/reel/DboKxIcTk8D/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Negi (@negimaanvi)</span></a>
       </blockquote>
           <div class="deck-shield" aria-hidden="true"></div>
+          <div class="deck-rail prev" aria-hidden="true"></div>
+          <div class="deck-rail next" aria-hidden="true"></div>
         </div>
         <div class="deck-grip">@negimaanvi</div>
       </article>
@@ -548,6 +573,8 @@
         <a class="fallback" href="https://www.instagram.com/reel/DdjYeLGBHgG/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Jayesh Udhwani (@wordsteal)</span></a>
       </blockquote>
           <div class="deck-shield" aria-hidden="true"></div>
+          <div class="deck-rail prev" aria-hidden="true"></div>
+          <div class="deck-rail next" aria-hidden="true"></div>
         </div>
         <div class="deck-grip">@wordsteal</div>
       </article>
@@ -558,6 +585,8 @@
         <a class="fallback" href="https://www.instagram.com/reel/DdjXWI5POeQ/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Sahil Jeet Singh (@sahiljeetofficial)</span></a>
       </blockquote>
           <div class="deck-shield" aria-hidden="true"></div>
+          <div class="deck-rail prev" aria-hidden="true"></div>
+          <div class="deck-rail next" aria-hidden="true"></div>
         </div>
         <div class="deck-grip">@sahiljeetofficial</div>
       </article>
@@ -568,6 +597,8 @@
         <a class="fallback" href="https://www.instagram.com/p/DdYQwJ2qQ4n/" target="_blank" rel="noopener">View this post on Instagram<span>A post shared by Katterpillar (@katterpillar)</span></a>
       </blockquote>
           <div class="deck-shield" aria-hidden="true"></div>
+          <div class="deck-rail prev" aria-hidden="true"></div>
+          <div class="deck-rail next" aria-hidden="true"></div>
         </div>
         <div class="deck-grip">@katterpillar</div>
       </article>
@@ -578,6 +609,8 @@
         <a class="fallback" href="https://www.instagram.com/reel/DaAOh5SRWIL/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Maya Lai (@mayalaiharpist)</span></a>
       </blockquote>
           <div class="deck-shield" aria-hidden="true"></div>
+          <div class="deck-rail prev" aria-hidden="true"></div>
+          <div class="deck-rail next" aria-hidden="true"></div>
         </div>
         <div class="deck-grip">@mayalaiharpist</div>
       </article>
@@ -593,7 +626,7 @@
   </section>
 
   <footer>
-    See you next week or month, depending on your subscription
+    See you next week
   </footer>
 
   <div class="airmail" aria-hidden="true"></div>
@@ -773,7 +806,14 @@
       var isTop = pos === 0;
       c.inert = !isTop;
       c.setAttribute('aria-hidden', isTop ? 'false' : 'true');
-      if (!isTop) c.querySelector('.deck-shield').hidden = false;
+      if (!isTop) {
+        var sh = c.querySelector('.deck-shield');
+        if (sh.hidden) {
+          sh.hidden = false;
+          var f = c.querySelector('iframe');
+          if (f) f.src = f.src;          // stops a reel that was playing
+        }
+      }
     });
     countEl.textContent = (order[0] + 1) + ' of ' + n;
   }
@@ -820,7 +860,7 @@
   var drag = null;
   deck.addEventListener('pointerdown', function (e) {
     if (busy || (e.pointerType === 'mouse' && e.button !== 0)) return;
-    var handle = e.target.closest('.deck-shield, .deck-grip');
+    var handle = e.target.closest('.deck-shield, .deck-grip, .deck-rail');
     if (!handle || handle.closest('.deck-card') !== top()) return;
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0, t: performance.now(),
              lastX: e.clientX, lastT: performance.now(), v: 0, handle: handle, moved: false };
@@ -846,8 +886,13 @@
     var c = top();
     c.style.transition = '';
     if (!d.moved) {
-      // a tap on the reel: lift the swipe layer so the reel itself can be played
-      if (!cancelled && d.handle.classList.contains('deck-shield')) d.handle.hidden = true;
+      if (cancelled) return;
+      if (d.handle.classList.contains('deck-rail')) {
+        // tapping an edge arrow moves through the deck
+        if (d.handle.classList.contains('next')) flyOut(-1); else back();
+      } else if (d.handle.classList.contains('deck-shield')) {
+        d.handle.hidden = true;          // lift the layer so the reel itself can be played
+      }
       return;
     }
     if (!cancelled && (Math.abs(d.dx) > 90 || Math.abs(d.v) > 0.5)) {
