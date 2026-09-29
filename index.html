@@ -232,6 +232,13 @@
     height: auto;
   }
   .honest { margin: 36px 0 0; text-align: center; }
+  .reel-note {
+    margin: 32px 0 0;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--pencil);
+    text-align: center;
+  }
   .snapshot figcaption {
     font-family: var(--hand);
     font-size: 34px;
@@ -242,28 +249,35 @@
 
   /* ---------- sticker of the week ---------- */
   .sticker-stage {
+    position: relative;
     perspective: 900px;
     display: flex;
     justify-content: center;
-    padding: 10px 0 6px;
+    padding: 34px 0 22px;
   }
-  .sticker {
+  /* the tilting holder: carries the card and, until it's torn open, the pack */
+  .holo {
     --rx: 0deg; --ry: 0deg;
     --px: 50%; --py: 50%;     /* foil position */
     --gx: 50%; --gy: 50%;     /* light position */
     --glow: 0.35;             /* how strongly the light hits */
     --sx: 0px; --sy: 12px;    /* shadow offset */
     position: relative;
-    width: min(88%, 360px);
+    width: min(84%, 340px);
     aspect-ratio: 750 / 1050;
-    border-radius: 4.8% / 3.43%;
-    overflow: hidden;
     transform: rotateX(var(--rx)) rotateY(var(--ry));
-    filter: drop-shadow(var(--sx) var(--sy) 14px rgba(20, 28, 50, .32));
     touch-action: pan-y;
     -webkit-user-select: none;
     user-select: none;
     will-change: transform;
+  }
+  .sticker {
+    position: absolute;
+    inset: 0;
+    border-radius: 4.8% / 3.43%;
+    overflow: hidden;
+    filter: drop-shadow(var(--sx) var(--sy) 14px rgba(20, 28, 50, .32));
+    cursor: pointer;
   }
   .sticker > * { position: absolute; inset: 0; pointer-events: none; }
   .sticker .art { width: 100%; height: 100%; display: block; }
@@ -321,9 +335,329 @@
     mix-blend-mode: soft-light;
     opacity: calc(.3 + var(--glow) * .5);
   }
+  .sticker:focus-visible { outline: 2px solid var(--air-red); outline-offset: 6px; }
+
+  /* ---------- the sealed pack ---------- */
+  /* while sealed, the card sits lower down inside the pack; it rises out when opened */
+  .sticker {
+    z-index: 2;
+    transform-origin: 50% 0;
+    transition: transform .95s cubic-bezier(.2,.9,.25,1.12);
+  }
+  .holo.sealed .sticker { transform: translateY(9%) scale(.9); }
+
+  .pack, .pack-back {
+    --tooth: 6px;              /* depth of the tear-line zigzag */
+    position: absolute;
+    inset: -7% -4.5% -4% -4.5%;
+    container-type: inline-size;
+  }
+  .pack-back { z-index: 1; pointer-events: none; }
+  .pack {
+    z-index: 3;
+    color: #23408e;
+    pointer-events: none;
+    filter:
+      drop-shadow(var(--sx) calc(var(--sy) + 6px) 18px rgba(60, 60, 70, .3))
+      drop-shadow(0 1px 1px rgba(60, 60, 70, .28));
+  }
+  .pack > * { pointer-events: auto; }
+  .pack[hidden], .pack-back[hidden] { display: none; }
+
+  /* pack height in container units: holo is 750x1050, pack adds 11% height and 9% width */
+  .pack-flap, .pack-body, .lining { --pack-h: 142.57cqw; --flap: calc(var(--pack-h) * .12); }
+
+  /* ---- the tear-off strip, cut into slices so it can tear bit by bit ---- */
+  .pack-flap {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: var(--flap);
+    z-index: 2;
+    cursor: grab;
+    touch-action: none;
+  }
+  .pack-flap:active { cursor: grabbing; }
+  .pack-flap:focus-visible { outline: 2px dashed #fff; outline-offset: -10px; }
+  .slice {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    overflow: hidden;
+    /* crimped top edge + zigzag tear line underneath (positions set per slice in JS) */
+    -webkit-mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 0 0 / 9px 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / calc(var(--tooth) * 2) 51% repeat-x;
+            mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 0 0 / 9px 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / calc(var(--tooth) * 2) 51% repeat-x;
+  }
+  .slice .skin { right: auto; top: 0; height: var(--pack-h); }
+  /* the inside of the wrapper: silver foil, seen once a torn piece turns over */
+  .slice-back { position: absolute; inset: 0; z-index: 5; display: none; }
+  .slice .skin { z-index: 0; }
+  .slice.torn { filter: brightness(var(--lit, 1)); }
+  .slice .slice-back { inset: 0 auto; }
+  .slice.back .slice-back { display: block; }
+  .slice-back, .lining {
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 1px, rgba(0,0,0,.05) 1px 3px),
+      linear-gradient(100deg, #7b838e 0%, #e8ecf1 14%, #a1a9b3 30%, #fbfcfe 46%, #939ba6 62%, #dde2e8 80%, #818993 100%);
+    background-size: auto, 320% 100%;
+    background-position: 0 0, var(--px) 0;
+  }
+  .slice-back::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(40,46,60,.35));
+    mix-blend-mode: soft-light;
+  }
+
+  /* the silver lining of the pack's back wall, visible through the opening */
+  .lining {
+    position: absolute;
+    left: 2%; right: 2%;
+    top: calc(var(--flap) - var(--tooth) - 5.5cqw);
+    height: calc(5.5cqw + var(--tooth) * 3);
+    -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 3px 0 / 10px 60% repeat-x,
+                  linear-gradient(#000 0 0) 0 100% / 100% 50% no-repeat;
+            mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 3px 0 / 10px 60% repeat-x,
+                  linear-gradient(#000 0 0) 0 100% / 100% 50% no-repeat;
+  }
+  .lining::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(20,24,34,.55), transparent 12%, transparent 88%, rgba(20,24,34,.55)),
+      linear-gradient(180deg, rgba(255,255,255,.25), transparent 35%, rgba(20,24,34,.6));
+  }
+
+  /* ---- the front of the pack ---- */
+  .pack-body {
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(var(--flap) - var(--tooth));
+    bottom: 0;
+    overflow: hidden;
+    /* pinched-in sides near the seals, zigzag tear line on top, crimped bottom */
+    -webkit-mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Cpath%20d%3D%27M0%200H100C98.6%204%2098.9%2025%2099.3%2050%2098.9%2075%2098.6%2093%20100%2097V100H0V97C1.4%2093%201.1%2075%20.7%2050%201.1%2025%201.4%204%200%200Z%27/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) var(--tooth) 0 / calc(var(--tooth) * 2) 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / 9px 51% repeat-x;
+    -webkit-mask-composite: source-in, source-over;
+            mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Cpath%20d%3D%27M0%200H100C98.6%204%2098.9%2025%2099.3%2050%2098.9%2075%2098.6%2093%20100%2097V100H0V97C1.4%2093%201.1%2075%20.7%2050%201.1%2025%201.4%204%200%200Z%27/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) var(--tooth) 0 / calc(var(--tooth) * 2) 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / 9px 51% repeat-x;
+            mask-composite: intersect, add;
+  }
+  .skin {
+    position: absolute;
+    left: 0; right: 0;
+    background:
+      radial-gradient(110% 65% at 50% 45%, #ffffff 0%, rgba(255,255,255,0) 70%),
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2734%27%20height%3D%2734%27%20viewBox%3D%270%200%2034%2034%27%3E%3Cpath%20d%3D%27M12%2021.35l-1.45-1.32C5.4%2015.36%202%2012.28%202%208.5%202%205.42%204.42%203%207.5%203c1.74%200%203.41.81%204.5%202.09C13.09%203.81%2014.76%203%2016.5%203%2019.58%203%2022%205.42%2022%208.5c0%203.78-3.4%206.86-8.55%2011.54L12%2021.35z%27%20transform%3D%27translate%283%203%29%20scale%28.34%29%27%20fill%3D%27%23f1a3ad%27/%3E%3Cpath%20d%3D%27M12%2021.35l-1.45-1.32C5.4%2015.36%202%2012.28%202%208.5%202%205.42%204.42%203%207.5%203c1.74%200%203.41.81%204.5%202.09C13.09%203.81%2014.76%203%2016.5%203%2019.58%203%2022%205.42%2022%208.5c0%203.78-3.4%206.86-8.55%2011.54L12%2021.35z%27%20transform%3D%27translate%2820%2020%29%20scale%28.3%29%20rotate%28-12%2012%2012%29%27%20fill%3D%27%23f6c4a0%27/%3E%3Ccircle%20cx%3D%2726%27%20cy%3D%277%27%20r%3D%271.1%27%20fill%3D%27%239fb4ea%27/%3E%3Ccircle%20cx%3D%278%27%20cy%3D%2726%27%20r%3D%271.1%27%20fill%3D%27%239fb4ea%27/%3E%3C/svg%3E") 0 0 / 7.4cqw 7.4cqw,
+      linear-gradient(170deg, #ffffff 0%, #fbfbfa 55%, #f3f3f1 100%);
+  }
+  .pack-body .skin { top: calc(var(--tooth) - var(--flap)); height: var(--pack-h); }
+
+  /* the pillow shape: rounded shading across, pinched at the seals, wrinkles, and a moving highlight */
+  .puff {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 24% 40% at calc(22% + var(--gx) * .56) calc(30% + var(--gy) * .3), rgba(255,255,255,.7), transparent 70%),
+      linear-gradient(180deg, rgba(110,108,100,.24) 4.5%, rgba(110,108,100,0) 15%, rgba(110,108,100,0) 84%, rgba(110,108,100,.24) 96.4%),
+      linear-gradient(90deg,
+        rgba(110,108,100,.3) 0%, rgba(110,108,100,.08) 6%, rgba(255,255,255,.35) 19%,
+        rgba(255,255,255,0) 36%, rgba(110,108,100,0) 62%, rgba(110,108,100,.08) 87%, rgba(110,108,100,.32) 100%);
+  }
+
+  /* crimped seals at top and bottom */
+  .crimp {
+    position: absolute;
+    left: 0; right: 0;
+    z-index: 1;
+    background:
+      linear-gradient(90deg, rgba(20,28,50,.28), transparent 8%, transparent 92%, rgba(20,28,50,.28)),
+      linear-gradient(rgba(255,255,255,.18), rgba(20,28,50,.14)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 2px, rgba(20,28,50,.14) 2px 4px),
+      repeating-linear-gradient(-45deg,
+        #c8323c 0 10px, #ffffff 10px 16px, #23408e 16px 26px, #ffffff 26px 32px);
+  }
+  .crimp.top { top: 0; height: 5.4%; box-shadow: 0 2px 3px rgba(20,28,50,.2); }
+  .crimp.bottom { bottom: 0; height: 3.6%; box-shadow: 0 -2px 3px rgba(20,28,50,.2); }
+
+  .flap-ui {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: var(--flap);
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 5% calc(var(--tooth) + 3px);
+    pointer-events: none;
+  }
+  .tear-line {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 2.4cqw;
+    font-family: var(--hand);
+    font-size: 5cqw;
+    line-height: 1;
+    color: #fff;
+    white-space: nowrap;
+    color: #23408e;
+  }
+  .tear-line svg { width: 5.4cqw; height: 5.4cqw; flex: none; }
+  .tear-line::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: radial-gradient(circle, rgba(35,64,142,.7) 1px, transparent 1.4px) 0 0 / 7px 2px repeat-x;
+  }
+  /* a shine that runs along the tear line, hinting at the swipe */
+  .flap-hint {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.75) 50%, transparent 65%) no-repeat;
+    background-size: 40% 100%;
+    background-position: -60% 0;
+    animation: swipe-hint 3.2s ease-in-out 1.2s infinite;
+    pointer-events: none;
+  }
+  .pack-flap.tearing .flap-hint { display: none; }
+  @keyframes swipe-hint {
+    0% { background-position: -60% 0; }
+    45%, 100% { background-position: 160% 0; }
+  }
+
+  /* airmail ribbon frame printed on the pack */
+  .pack-frame {
+    position: absolute;
+    left: 6%; right: 6%;
+    top: 16%; bottom: 7.5%;
+    border: 2.2cqw solid transparent;
+    border-image: repeating-linear-gradient(-45deg,
+      #e9606c 0 12px, #ffffff 12px 18px, #5b7fd6 18px 30px, #ffffff 30px 36px) 12;
+  }
+  .pack-brand {
+    position: absolute;
+    left: 0; right: 0; top: 19.5%;
+    text-align: center;
+    font-family: var(--hand);
+    font-weight: 700;
+    font-size: 8.2cqw;
+    line-height: 1;
+    color: #23408e;
+    text-shadow: 0 2px 0 rgba(255,255,255,.9);
+  }
+  .pack-sub {
+    position: absolute;
+    left: 0; right: 0; top: 27.6%;
+    text-align: center;
+    font-style: italic;
+    font-size: 4.1cqw;
+    line-height: 1;
+    color: #8a8578;
+  }
+
+  /* this edition's sticker, printed on the pack.
+     multiply drops the photo's white background so only the drawing shows */
+  .pack-art {
+    position: absolute;
+    left: 17%; width: 66%;
+    top: 33%;
+    aspect-ratio: 1;
+  }
+  /* a soft white patch so the heart pattern doesn't show through the white fur */
+  .pack-art::before {
+    content: "";
+    position: absolute;
+    inset: -4%;
+    background: radial-gradient(closest-side, #fff 78%, rgba(255,255,255,0));
+  }
+  .pack-art img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+
+  .pack-meta {
+    position: absolute;
+    left: 0; right: 0; top: 85%;
+    text-align: center;
+    font-size: 3.6cqw;
+    line-height: 1;
+    color: #8a8578;
+  }
+
+  /* little four-point glints that twinkle across the pack */
+  .glint { position: absolute; width: 5cqw; height: 5cqw; color: #f2b544; }
+  .glint:nth-of-type(even) { color: #f28c98; }
+  .glint svg { width: 100%; height: 100%; display: block; }
+  .glint:nth-of-type(1) { left: 14%; top: 37%; animation: twinkle 2.6s ease-in-out infinite; }
+  .glint:nth-of-type(2) { left: 81%; top: 35%; width: 3.6cqw; height: 3.6cqw; animation: twinkle 3.1s ease-in-out .7s infinite; }
+  .glint:nth-of-type(3) { left: 79%; top: 72%; animation: twinkle 2.9s ease-in-out 1.4s infinite; }
+  .glint:nth-of-type(4) { left: 15%; top: 75%; width: 3.2cqw; height: 3.2cqw; animation: twinkle 3.4s ease-in-out .3s infinite; }
+  @keyframes twinkle {
+    0%, 100% { opacity: .15; transform: scale(.6) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(45deg); }
+  }
+
+  /* foil and glare over the whole pack */
+  .p-foil, .p-etch, .p-glare { position: absolute; inset: 0; pointer-events: none; }
+  .p-glare { z-index: 2; }
+  .p-foil {
+    background: linear-gradient(115deg,
+      transparent 18%,
+      hsla(190 90% 70% / .7) 34%,
+      hsla(300 90% 75% / .7) 44%,
+      hsla(50 100% 70% / .65) 54%,
+      hsla(140 80% 70% / .55) 62%,
+      transparent 78%);
+    background-size: 260% 260%;
+    background-position: var(--px) var(--py);
+    mix-blend-mode: multiply;
+    opacity: calc(.04 + var(--glow) * .3);
+  }
+  .p-etch {
+    background:
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0) 0 3px, rgba(255,255,255,.9) 3px 4px),
+      radial-gradient(circle at var(--gx) var(--gy),
+        rgba(150,200,255,.8), rgba(255,160,210,.5) 28%, transparent 58%);
+    background-blend-mode: screen;
+    mix-blend-mode: multiply;
+    opacity: calc(var(--glow) * .22);
+  }
+  .p-glare {
+    background: radial-gradient(farthest-corner circle at var(--gx) var(--gy),
+      rgba(255,255,255,.7) 0%, rgba(255,255,255,.15) 28%, rgba(90,90,90,.14) 95%);
+    mix-blend-mode: soft-light;
+    opacity: calc(.4 + var(--glow) * .5);
+  }
+
+  /* hearts and glints that burst out when the pack opens */
+  .burst {
+    position: absolute;
+    left: 50%; top: 50%;
+    pointer-events: none;
+    font-size: 20px;
+    line-height: 1;
+    z-index: 3;
+  }
   .sticker-note {
     font-family: var(--hand);
     font-size: 24px;
+    line-height: 1.15;
     color: var(--pencil);
     text-align: center;
     margin: 14px 0 0;
@@ -356,8 +690,19 @@
     color: var(--pencil);
     text-align: center;
   }
-  .sticker { cursor: pointer; }
-  .sticker:focus-visible { outline: 2px solid var(--air-red); outline-offset: 6px; }
+  .reseal {
+    display: block;
+    margin: 10px auto 0;
+    background: none;
+    border: 0;
+    padding: 6px 10px;
+    font: italic 13px/1 var(--serif);
+    color: var(--pencil);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .reseal[hidden] { display: none; }
 
   /* save-the-sticker dialog */
   .save-dialog {
@@ -385,8 +730,12 @@
   .save-actions a.plain { background: none; color: var(--air-blue); border: 1px solid var(--air-blue); }
   .save-actions button { background: none; color: var(--pencil); border: 1px solid var(--rule); }
   .save-actions a:focus-visible, .save-actions button:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
-  .tilt-btn:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
+  .tilt-btn:focus-visible, .reseal:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
 
+  @media (prefers-reduced-motion: reduce) {
+    .flap-hint, .glint { animation: none !important; }
+    .glint { opacity: .7; }
+  }
 
   /* song of this edition */
   .song-frame {
@@ -458,52 +807,18 @@
   </header>
 
   <section class="poem" aria-labelledby="poem-title">
-    <h2 id="poem-title">Kunjum-Kunjum</h2>
+    <h2 id="poem-title">Confession Page</h2>
 
     <div class="ruled">
-    <p>A stretch of silence, soft and wide,<br>
-    two continents, a sky between.<br>
-    You asked for room to heal inside,<br>
-    so I don't knock; I just stay seen.</p>
+    <p>Due to a massive data leak (and a mental block), we regret to inform you that there's no poem this time around. So, so... to make up for it, here's a completely made-up story, pulled straight out of my arse, about a girl.</p>
 
-    <p>But some nights a jam session begins,<br>
-    Your queue, my queue, then half of each<br>
-    No typing dots, no how've you beens,<br>
-    just music taking us where we can't reach.</p>
+    <p>Manasi, you know what? I think I'm in like with her. She's something else, honestly one of the most complete women I've ever met.</p>
 
-    <p>And each morning, like a sign<br>
-    Hung above a lady's door,<br>
-    In your notes I see a few lines,<br>
-    Just one song is enough to lure.</p>
+    <p>She aces everything she touches: studies, dance, swimming, and, kunjum-kunjum, the piano. She's a books-and-romcoms nerd with annoyingly good taste in music, my very own RJ, a future dermatologist, and on top of all that, she just glows. I mean, what the actual fuxk? She's taking perfection to its absolute limit, and I'm standing here, simply awestruck. Uff, nazar na lage kisi ki.</p>
 
-    <p>Is it tease, or is it ache?<br>
-    Is it "wait," or is it "come"?<br>
-    Either way, the chords still shake<br>
-    something only you can strum.</p>
+    <p>In the end, I just want to tell her: <em>of all the places I could be, I want to be here with you.</em></p>
 
-    <p>For I know the road you tread,<br>
-    Still is warm from other feet.<br>
-    Let the old words all be said,<br>
-    Ere the new ones find their beat.<br>
-    Love that hurries, love that pleads,<br>
-    Builds on sand and fades by day.<br>
-    I will plant my patient seeds<br>
-    In the silence, far away.</p>
-
-    <p>But now December's on its way:<br>
-    a crowded gate, and you, and then<br>
-    the run you promised me that day.<br>
-    One kiss, and I am home again.</p>
-
-    <p>And who will let the L-word slip?<br>
-    Guard it, darling, till the kiss.<br>
-    And I might lose it, lip to lip:<br>
-    Worth every penny, losing this.</p>
-
-    <p>We'd never say it, you and I;<br>
-    it's our rule, and I obey.<br>
-    Still, kunjum-kunjum, by the by,<br>
-    I miss you more than I can say.</p>
+    <p>So, Manasi... what should I do about her?</p>
     </div>
 
     <p class="signoff">x</p>
@@ -514,7 +829,7 @@
     <!-- To change the song: in Spotify, Share > Copy Song Link, then put the ID
          (the part after /track/ and before any ?) in place of the ID in the link below. -->
     <iframe class="song-frame"
-      src="https://open.spotify.com/embed/track/3SdTKo2uVsxFblQjpScoHy?utm_source=generator"
+      src="https://open.spotify.com/embed/track/5rdLIlhXJYTMUDGM45mL7d?utm_source=generator"
       title="Song of this edition on Spotify"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="lazy"></iframe>
@@ -523,26 +838,79 @@
   <section aria-labelledby="highlight-title">
     <h2 id="highlight-title">This edition's highlight</h2>
     <figure class="snapshot">
-      <img src=" " alt="Text post: Naam nahi lunga per ek ladka hai joh lambi height laker bhi ek ladki nahi pata pa rha hai" width="738" height="1600">
-      <figcaption>Sure Buddy</figcaption>
+      <img src="assets/week1H.jpeg" alt="A photo from 15 August 2021 of her striking a pose with one hand on her hip, in a white Fashion tee, open on the phone during our video call" width="568" height="1280">
+      <figcaption>My Cutie Patootie</figcaption>
     </figure>
   </section>
 
   <section aria-labelledby="sticker-title">
     <h2 id="sticker-title">Sticker of the week</h2>
     <p class="collect">A new one every edition. Collect them all!</p>
-    <div class="sticker-stage">
-      <div class="sticker" id="sticker" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Holographic collector card of Snoopy hugging Woodstock, 30 September 2026. Open to download it.">
-        <img class="art" id="card-art" alt="" width="750" height="1050" src="assets/snoopy-woodstock-card.webp">
-        <div class="foil"></div>
-        <div class="sheen"></div>
-        <div class="etch"></div>
-        <div class="glare"></div>
+    <!-- EACH EDITION: change data-edition to the new date so the pack comes back sealed -->
+    <div class="sticker-stage" id="sticker-stage" data-edition="2026-09-30">
+      <div class="holo sealed" id="holo">
+
+        <div class="pack-back" id="pack-back" aria-hidden="true"><div class="lining"></div></div>
+        <div class="sticker" id="sticker" role="button" tabindex="-1" aria-hidden="true" aria-haspopup="dialog" aria-label="Holographic collector card of Snoopy hugging Woodstock, 30 September 2026. Open to download it.">
+          <img class="art" id="card-art" alt="" width="750" height="1050" src="assets/snoopy-woodstock-card.webp">
+          <div class="foil"></div>
+          <div class="sheen"></div>
+          <div class="etch"></div>
+          <div class="glare"></div>
+        </div>
+
+        <div class="pack" id="pack">
+          <div class="pack-flap" id="pack-flap" role="button" tabindex="0" aria-label="Tear open this week's sticker pack">
+            <!-- the strip is cut into slices by the script; this is one slice's artwork -->
+            <template id="flap-tpl">
+              <div class="skin">
+                <div class="puff"></div>
+                <div class="crimp top"></div>
+                <div class="p-glare"></div>
+                <div class="flap-ui" aria-hidden="true">
+                  <div class="tear-line">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>
+                    tear here
+                  </div>
+                </div>
+              </div>
+              <div class="slice-back"></div>
+            </template>
+            <div class="flap-hint"></div>
+          </div>
+
+          <div class="pack-body" id="pack-body" aria-hidden="true">
+            <div class="skin">
+              <div class="pack-frame"></div>
+              <div class="pack-brand">Kunjum-Kunjum Post</div>
+              <div class="pack-sub">Sticker of the week, 30 Sep 2026</div>
+
+              <div class="pack-art">
+                <img src="assets/milkmocha.jpg" alt="" width="512" height="512" decoding="async">
+              </div>
+
+              <span class="glint"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.5 5.5 11.4 12 12-6.5.6-11.4 5.5-12 12-.6-6.5-5.5-11.4-12-12C6.5 11.4 11.4 6.5 12 0z" fill="currentColor"/></svg></span>
+              <span class="glint"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.5 5.5 11.4 12 12-6.5.6-11.4 5.5-12 12-.6-6.5-5.5-11.4-12-12C6.5 11.4 11.4 6.5 12 0z" fill="currentColor"/></svg></span>
+              <span class="glint"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.5 5.5 11.4 12 12-6.5.6-11.4 5.5-12 12-.6-6.5-5.5-11.4-12-12C6.5 11.4 11.4 6.5 12 0z" fill="currentColor"/></svg></span>
+              <span class="glint"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.5 5.5 11.4 12 12-6.5.6-11.4 5.5-12 12-.6-6.5-5.5-11.4-12-12C6.5 11.4 11.4 6.5 12 0z" fill="currentColor"/></svg></span>
+
+              <div class="pack-meta">Pack 001 of 012</div>
+
+              <div class="puff"></div>
+              <div class="crimp bottom"></div>
+              <div class="p-foil"></div>
+              <div class="p-etch"></div>
+              <div class="p-glare"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <button class="tilt-btn" id="tilt-btn" type="button" hidden>Turn on tilt</button>
     <p class="sticker-note" id="sticker-note" aria-live="polite"></p>
-    <p class="save-hint" id="save-hint">Tap the card to download it</p>
+    <p class="save-hint" id="save-hint"></p>
+    <button class="reseal" id="reseal" type="button" hidden>Wrap it back up</button>
     <dialog class="save-dialog" id="save-dialog" aria-labelledby="save-title">
       <img src="assets/snoopy-woodstock-card.webp" alt="Collector card: Snoopy and Woodstock" id="save-preview" width="150" height="210" loading="lazy">
       <p id="save-title">Want to keep this one?</p>
@@ -554,6 +922,7 @@
     </dialog>
   </section>
 
+  <!-- Lego Batman multiplayer section (hidden for now)
   <section aria-label="Lego Batman">
     <p class="scrawl">There's splitscreen multiplayer! Wanna be my Robin?</p>
     <div class="embed">
@@ -562,39 +931,90 @@
       </blockquote>
     </div>
   </section>
+  -->
 
   <section aria-labelledby="reels-title">
     <h2 id="reels-title">Reels I saved for you</h2>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DboKxIcTk8D/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DboKxIcTk8D/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Negi (@negimaanvi)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DbjlLhBzCHn/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DbjlLhBzCHn/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by 🇺🇸 Snoopy Lover's US 🇺🇸 (@snoopy_lover_us)</span></a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdjYeLGBHgG/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdjYeLGBHgG/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Jayesh Udhwani (@wordsteal)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd11gzAsS6S/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Dd11gzAsS6S/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by @pgotguts</span></a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdjXWI5POeQ/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdjXWI5POeQ/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Sahil Jeet Singh (@sahiljeetofficial)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd1TyeJOFb2/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Dd1TyeJOFb2/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Aarjav Jain (@aarjavcore)</span></a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DdYQwJ2qQ4n/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/p/DdYQwJ2qQ4n/" target="_blank" rel="noopener">View this post on Instagram<span>A post shared by Katterpillar (@katterpillar)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddahzo0MVrh/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Ddahzo0MVrh/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Pratyush🇮🇳 &amp; Ksenia🇷🇺 |Couple comedy hub, Reels, funny videos (@annoyingtogether)</span></a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DaAOh5SRWIL/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DaAOh5SRWIL/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Maya Lai (@mayalaiharpist)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddai5ZlN0e-/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Ddai5ZlN0e-/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Fabiana Solano (@fabianamsolano)</span></a>
       </blockquote>
     </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdKAqakpMUx/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdKAqakpMUx/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Mr. Cinemagic (@mr.cinemagic)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcENL8Toawt/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DcENL8Toawt/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Lev (@levxpiano)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdWT_KeTKvE/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdWT_KeTKvE/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Ishaan (@iishaanar)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdtWJbyyrE2/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdtWJbyyrE2/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Janya Masand🍁 (@janya_jm)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddq9zEdyXqH/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Ddq9zEdyXqH/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by ickinsick (@ickinsick)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdbrR-0IMZ-/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdbrR-0IMZ-/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by RJ Princy Parikh (@princyparriikh)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdoWQdFOipj/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdoWQdFOipj/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by 🪼 (@iheartjwm)</span></a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd2ilb_ubcV/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Dd2ilb_ubcV/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by EMMA WALZ (@mrsemmawalz)</span></a>
+      </blockquote>
+    </div>
+
+    <p class="reel-note">Note: Funnier reels are being saved from this week on. Thanks for bearing with us!</p>
 
     <p class="scrawl honest">It ain't much but it's honest work</p>
   </section>
@@ -607,21 +1027,56 @@
 
 <script>
 (function () {
-  var card = document.getElementById('sticker');
-  var note = document.getElementById('sticker-note');
-  var btn  = document.getElementById('tilt-btn');
-  if (!card) return;
+  var stage = document.getElementById('sticker-stage');
+  var holo  = document.getElementById('holo');
+  var card  = document.getElementById('sticker');
+  var pack  = document.getElementById('pack');
+  var packBack = document.getElementById('pack-back');
+  var flap  = document.getElementById('pack-flap');
+  var body  = document.getElementById('pack-body');
+  var tpl   = document.getElementById('flap-tpl');
+  var note  = document.getElementById('sticker-note');
+  var hint  = document.getElementById('save-hint');
+  var btn   = document.getElementById('tilt-btn');
+  var reseal = document.getElementById('reseal');
+  if (!holo) return;
 
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MAX_TILT = reduce ? 4 : 12;      // degrees of rotation at full tilt
   var GYRO_RANGE = 18;                 // phone tilt (deg) that maps to full sticker tilt
   var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+  var KEY = 'kk-pack-' + (stage.getAttribute('data-edition') || 'current');
+
+  var mode = 'none';     // none | pointer | gyro | denied
+  var sealed = true;
+  try { sealed = localStorage.getItem(KEY) !== 'open'; } catch (e) {}
+
+  /* ---- words under the card ---- */
+  function say(text) { if (note.textContent !== text) note.textContent = text; }
+  function lightMsg() {
+    if (mode === 'gyro') return 'Tilt your phone to catch the light';
+    if (mode === 'denied') return 'Motion is off, so drag across it instead';
+    return coarse ? 'Drag across it to catch the light' : 'Move your cursor around it';
+  }
+  function refresh() {
+    if (sealed) {
+      say(coarse ? 'Swipe along the top to tear it open' : 'Drag along the top to tear it open');
+      hint.textContent = lightMsg();
+    } else {
+      say(lightMsg());
+      hint.textContent = coarse ? 'Tap the card to download it' : 'Click the card to download it';
+    }
+    reseal.hidden = sealed;
+    card.tabIndex = sealed ? -1 : 0;
+    card.setAttribute('aria-hidden', sealed ? 'true' : 'false');
+  }
 
   /* ---- click the card to open the download box ---- */
   var dlg = document.getElementById('save-dialog');
   var link = document.getElementById('save-link');
   var cardLink = document.getElementById('save-card');
   function openSave() {
+    if (sealed) return;
     if (dlg.showModal) dlg.showModal();
     else if (confirm('Download the collector card?')) cardLink.click();
   }
@@ -641,23 +1096,18 @@
   });
   dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });  // tap outside
 
+  /* ---- tilt + light ---- */
   var tx = 0, ty = 0;   // target, -1..1
   var cx = 0, cy = 0;   // current (smoothed)
-  var mode = 'none';
   var visible = true;
 
   function clamp(v) { return v < -1 ? -1 : v > 1 ? 1 : v; }
   function setTarget(x, y) { tx = clamp(x); ty = clamp(y); }
 
-  function say(text) { if (note.textContent !== text) note.textContent = text; }
-  say(coarse ? 'Drag across it to catch the light' : 'Move your cursor around it');
-  if (!coarse) document.getElementById('save-hint').textContent = 'Click the card to download it';
-
-  /* ---- render loop ---- */
   function frame() {
     cx += (tx - cx) * 0.1;
     cy += (ty - cy) * 0.1;
-    var s = card.style;
+    var s = holo.style;
     s.setProperty('--rx', (-cy * MAX_TILT).toFixed(2) + 'deg');
     s.setProperty('--ry', ( cx * MAX_TILT).toFixed(2) + 'deg');
     // the light sits opposite to the side that dips away
@@ -676,15 +1126,15 @@
       var was = visible;
       visible = entries[0].isIntersecting;
       if (visible && !was) requestAnimationFrame(frame);
-    }).observe(card);
+    }).observe(holo);
   }
   requestAnimationFrame(frame);
 
-  /* ---- cursor (laptops / desktops) ---- */
+  /* cursor (laptops / desktops) */
   window.addEventListener('pointermove', function (e) {
     if (mode === 'gyro' || e.pointerType === 'touch') return;
-    mode = 'pointer';
-    var r = card.getBoundingClientRect();
+    if (mode !== 'pointer') { mode = 'pointer'; refresh(); }
+    var r = holo.getBoundingClientRect();
     var reach = Math.max(r.width, r.height) * 0.9;
     setTarget((e.clientX - (r.left + r.width / 2)) / reach,
               (e.clientY - (r.top + r.height / 2)) / reach);
@@ -693,29 +1143,26 @@
     if (!e.relatedTarget && mode === 'pointer') setTarget(0, 0);
   });
 
-  /* ---- finger drag (touch devices without gyro access) ---- */
+  /* finger drag (touch devices without gyro access) */
   function touchMove(e) {
-    if (mode === 'gyro' || e.pointerType !== 'touch') return;
-    var r = card.getBoundingClientRect();
+    if (mode === 'gyro' || e.pointerType !== 'touch' || drag) return;
+    var r = holo.getBoundingClientRect();
     setTarget((e.clientX - (r.left + r.width / 2)) / (r.width / 2),
               (e.clientY - (r.top + r.height / 2)) / (r.height / 2));
   }
-  card.addEventListener('pointerdown', touchMove);
-  card.addEventListener('pointermove', touchMove);
+  holo.addEventListener('pointerdown', touchMove);
+  holo.addEventListener('pointermove', touchMove);
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) {
-    card.addEventListener(t, function (e) {
+    holo.addEventListener(t, function (e) {
       if (mode !== 'gyro' && e.pointerType === 'touch') setTarget(0, 0);
     });
   });
 
-  /* ---- gyroscope (phones / tablets) ---- */
+  /* gyroscope (phones / tablets) */
   var base = null;
   function onOrient(e) {
     if (e.beta == null || e.gamma == null) return;
-    if (mode !== 'gyro') {
-      mode = 'gyro';
-      say('Tilt your phone to catch the light');
-    }
+    if (mode !== 'gyro') { mode = 'gyro'; refresh(); }
     if (!base) base = { b: e.beta, g: e.gamma };
     // slowly recentre on however the phone is being held
     base.b += (e.beta  - base.b) * 0.006;
@@ -738,23 +1185,257 @@
       btn.hidden = false;
       btn.addEventListener('click', function () {
         DOE.requestPermission().then(function (state) {
+          btn.hidden = true;
           if (state === 'granted') {
             window.addEventListener('deviceorientation', onOrient);
-            btn.hidden = true;
-            say('Tilt your phone to catch the light');
+            mode = 'gyro';
           } else {
-            btn.hidden = true;
-            say('Motion is off, so drag across it instead');
+            mode = 'denied';
           }
-        }).catch(function () {
-          btn.hidden = true;
-        });
+          refresh();
+        }).catch(function () { btn.hidden = true; });
       });
     }
   } else if (DOE) {
     // Android and others: starts straight away (needs https)
     window.addEventListener('deviceorientation', onOrient);
   }
+
+  /* ---- the tear strip: cut into thin slices that peel away one after another ---- */
+  var N = 28;
+  var slices = [];
+  for (var i = 0; i < N; i++) {
+    var sl = document.createElement('div');
+    sl.className = 'slice';
+    sl.appendChild(tpl.content.cloneNode(true));
+    flap.appendChild(sl);
+    slices.push(sl);
+  }
+  var W = 0, H = 0, SW = 0;
+  function measure() {
+    W = flap.offsetWidth; H = flap.offsetHeight; SW = W / N;
+    if (!W) return;
+    slices.forEach(function (s, i) {
+      var x = i * SW;
+      s.style.left = x + 'px';
+      s.style.width = (SW + 1) + 'px';                 // 1px overlap hides seams
+      s.style.transformOrigin = (-x) + 'px 0px';        // transforms work in strip coordinates
+      var mp = (-x) + 'px 0px, ' + (-x) + 'px 100%';    // keep the zigzags continuous
+      s.style.webkitMaskPosition = mp;
+      s.style.maskPosition = mp;
+      var sk = s.firstElementChild;
+      sk.style.left = (-x) + 'px';
+      sk.style.width = W + 'px';
+      var bk = s.lastElementChild;                      // silver lines up across slices too
+      bk.style.left = (-x) + 'px';
+      bk.style.width = W + 'px';
+    });
+    renderTear();
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(measure).observe(flap);
+  else window.addEventListener('resize', measure);
+
+  var tf = 0;       // how far along the tear has got, 0..1
+  var tdir = 0;     // 1 = tearing left to right, -1 = right to left
+  var CURL = 11, CURL_MAX = 165;   // how much each slice folds back on itself, and the limit
+  var LIFT_MAX = 26;               // how far the torn piece is raised, in degrees
+
+  function renderTear() {
+    var done = {};
+    if (tf > 0 && W) {
+      var fw = Math.min(tf, 0.9999) * N;
+      var k = Math.floor(fw), frac = fw - k;
+      // the tear front, where the torn piece is still attached
+      var fx = tdir > 0 ? (k + 1) * SW : (N - 1 - k) * SW;
+      // once it has folded back, the whole torn piece is raised up off the pack
+      var lift = LIFT_MAX * Math.min(1, fw / 12) * Math.min(1, fw / 12) * (0.6 + 0.4 * tf);
+      var M = new DOMMatrix()
+        .translate(fx, H)
+        .rotateAxisAngle(0, 0, 1, -tdir * lift)
+        .translate(-fx, -H);
+      var bent = 0;
+      // perspective, seen from the middle of the tear line, applied per slice
+      var P = new DOMMatrix().translate(W / 2, H)
+        .multiply(new DOMMatrix([1,0,0,0, 0,1,0,0, 0,0,1,-1 / 700, 0,0,0,1]))
+        .translate(-W / 2, -H);
+      // walk from the tear front out to the free end, each slice hinged on the one before
+      for (var t = 0; t <= k; t++) {
+        var j = tdir > 0 ? k - t : N - 1 - k + t;
+        var amt = t === 0 ? frac : 1;
+        var hx = tdir > 0 ? (j + 1) * SW : j * SW;
+        var b = Math.max(0, Math.min(CURL, CURL_MAX - bent)) * amt; bent += b;
+        M = M.multiply(new DOMMatrix()
+          .translate(hx, 0)
+          .rotateAxisAngle(0, 1, 0, tdir * b)
+          .translate(-hx, 0));
+        slices[j].style.transform = P.multiply(M).toString();
+        slices[j].style.zIndex = 10 + t;                 // the folded-back end sits nearest to you
+        slices[j].style.setProperty('--lit', (0.62 + 0.5 * Math.abs(M.m33)).toFixed(3));  // light falls off as it turns
+        slices[j].classList.add('torn');
+        slices[j].classList.toggle('back', M.m33 < 0);   // turned over: show the silver inside
+        done[j] = true;
+      }
+    }
+    for (var i = 0; i < N; i++) {
+      if (!done[i]) {
+        slices[i].style.transform = '';
+        slices[i].style.zIndex = '';
+        slices[i].classList.remove('back', 'torn');
+      }
+    }
+  }
+
+  function buzz(ms) { if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) {} } }
+
+  function tearTo(f) {
+    if (f <= tf) return;
+    var before = Math.floor(tf * N);
+    tf = Math.min(1, f);
+    if (Math.floor(tf * N) > before) buzz(4);
+    flap.classList.add('tearing');
+    renderTear();
+    if (tf >= 1) finishTear();
+  }
+
+  var drag = null;
+  flap.addEventListener('pointerdown', function (e) {
+    if (!sealed || opening) return;
+    e.stopPropagation();
+    flap.setPointerCapture(e.pointerId);
+    drag = { id: e.pointerId, x: e.clientX, f0: tf, moved: false };
+  });
+  flap.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var dx = e.clientX - drag.x;
+    if (Math.abs(dx) > 4) drag.moved = true;
+    if (!tdir) {
+      if (Math.abs(dx) < 6) return;
+      tdir = dx > 0 ? 1 : -1;
+      drag.x = e.clientX - tdir * 6;
+      dx = e.clientX - drag.x;
+    }
+    // the tear only ever moves forward, following the finger
+    tearTo(drag.f0 + (dx * tdir) / W * 1.1);
+  });
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var d = drag; drag = null;
+    if (!d.moved && tf === 0) wiggle();
+  }
+  flap.addEventListener('pointerup', endDrag);
+  flap.addEventListener('pointercancel', endDrag);
+
+  // tapping the pack gives it a little shake, to show it wants tearing
+  function wiggle() {
+    if (reduce || !pack.animate) return;
+    pack.animate([
+      { transform: 'rotate(0)' }, { transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' },
+      { transform: 'rotate(-1deg)' }, { transform: 'rotate(0)' }
+    ], { duration: 420, easing: 'ease-out' });
+  }
+  body.addEventListener('click', function () { if (sealed) wiggle(); });
+
+  // keyboard: Enter or Space tears it all the way along
+  flap.addEventListener('keydown', function (e) {
+    if (!sealed || opening || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    if (!tdir) tdir = 1;
+    var from = tf, start = performance.now(), dur = reduce ? 1 : 1100 * (1 - from);
+    (function step(now) {
+      var p = Math.min(1, (now - start) / dur);
+      tearTo(from + (1 - from) * p);
+      if (p < 1 && !opening) requestAnimationFrame(step);
+    })(start);
+  });
+
+  var opening = false;
+  function finishTear() {
+    if (opening) return;
+    opening = true;
+    drag = null;
+    buzz([10, 30, 16]);
+    var dir = tdir || 1;
+    var focusWasOnFlap = document.activeElement === flap;
+
+    function done() {
+      opening = false;
+      [flap, body, packBack].forEach(function (el) {
+        if (el.getAnimations) el.getAnimations().forEach(function (a) { a.cancel(); });
+      });
+      setSealed(false);
+      if (focusWasOnFlap) card.focus();
+    }
+
+    if (reduce || !pack.animate) {
+      holo.classList.remove('sealed');
+      done();
+      return;
+    }
+    // the torn strip comes away...
+    flap.animate([
+      { transform: 'none', opacity: 1 },
+      { transform: 'translate(' + (dir * 22) + '%, -150%) rotate(' + (-dir * 14) + 'deg)', opacity: 0 }
+    ], { duration: 700, easing: 'cubic-bezier(.3,.6,.4,1)', fill: 'forwards' });
+    // ...the card rises out of the opening...
+    setTimeout(function () { holo.classList.remove('sealed'); }, 350);
+    setTimeout(burst, 900);
+    // ...and the empty wrapper drops away
+    var drop = [
+      { transform: 'none', opacity: 1 },
+      { transform: 'translateY(4%)', opacity: 1, offset: .25 },
+      { transform: 'translateY(60%) rotate(' + (dir * 6) + 'deg)', opacity: 0 }
+    ];
+    var opts = { duration: 800, delay: 1250, easing: 'cubic-bezier(.55,0,.7,.4)', fill: 'forwards' };
+    packBack.animate(drop, opts);
+    body.animate(drop, opts).onfinish = done;
+  }
+
+  // little hearts and glints fly out as the card appears
+  function burst() {
+    var bits = ['\u2665', '\u2726', '\u2665', '\u2727'];
+    var colors = ['#c8323c', '#23408e', '#e9b949', '#ef6b73', '#7f9cf0'];
+    for (var i = 0; i < 22; i++) {
+      var s = document.createElement('span');
+      s.className = 'burst';
+      s.setAttribute('aria-hidden', 'true');
+      s.textContent = bits[i % bits.length];
+      s.style.color = colors[i % colors.length];
+      s.style.fontSize = (12 + Math.random() * 16).toFixed(0) + 'px';
+      stage.appendChild(s);
+      var a = (i / 22) * Math.PI * 2 + Math.random() * .4;
+      var d = 110 + Math.random() * 90;
+      var anim = s.animate([
+        { transform: 'translate(-50%, -50%) scale(.3)', opacity: 0 },
+        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: .2 },
+        { transform: 'translate(calc(-50% + ' + (Math.cos(a) * d).toFixed(0) + 'px), calc(-50% + ' + (Math.sin(a) * d * 1.2 + 40).toFixed(0) + 'px)) rotate(' + (Math.random() * 180 - 90).toFixed(0) + 'deg) scale(.8)', opacity: 0 }
+      ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(.15,.7,.4,1)', fill: 'forwards' });
+      anim.onfinish = (function (el) { return function () { el.remove(); }; })(s);
+    }
+  }
+
+  function setSealed(v) {
+    sealed = v;
+    try { v ? localStorage.removeItem(KEY) : localStorage.setItem(KEY, 'open'); } catch (e) {}
+    holo.classList.toggle('sealed', v);
+    pack.hidden = packBack.hidden = !v;
+    if (v) {
+      tf = 0; tdir = 0;
+      flap.classList.remove('tearing');
+    }
+    renderTear();
+    refresh();
+  }
+
+  reseal.addEventListener('click', function () {
+    setSealed(true);
+    measure();
+    flap.focus();
+  });
+
+  holo.classList.toggle('sealed', sealed);
+  pack.hidden = packBack.hidden = !sealed;
+  measure();
+  refresh();
 })();
 </script>
 <script async src="https://www.instagram.com/embed.js"></script>
