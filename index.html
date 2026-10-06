@@ -9,15 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #eceee6;
-    --sheet: #fbfcf8;
+    --paper: #ecdcc2;
+    --sheet: #fdf9f1;
     --ink: #1e2433;
     --pencil: #6b7080;
     --air-blue: #23408e;
     --air-red: #c8323c;
     --ribbon-white: #fbfcf8;
-    --rule: #d9dde3;
-    --line: #dde3ef;
+    --rule: #e4d8c6;
+    --line: #eddcc6;
     --stamp-paper: #fbfcf8;
     --serif: "Literata", Georgia, "Times New Roman", serif;
     --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
@@ -33,15 +33,15 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper: #11151e;
-      --sheet: #1c2130;
+      --paper: #1a130e;
+      --sheet: #261d17;
       --ink: #e6e8ee;
       --pencil: #9aa0b0;
       --air-blue: #7f9cf0;
       --air-red: #ef6b73;
       --ribbon-white: #e9ebf0;
-      --rule: #2e3446;
-      --line: #283049;
+      --rule: #40332a;
+      --line: #3a2d24;
       --stamp-paper: #e9ebf0;
     }
   }
@@ -50,10 +50,12 @@
   body {
     margin: 0;
     background-color: var(--paper);
-    /* faint envelope-paper weave */
+    /* faint envelope-paper weave, warmed up for autumn */
     background-image:
-      repeating-linear-gradient(0deg, rgba(120,130,150,.035) 0 1px, transparent 1px 4px),
-      repeating-linear-gradient(90deg, rgba(120,130,150,.035) 0 1px, transparent 1px 4px);
+      radial-gradient(120% 70% at 50% 110%, rgba(196,92,32,.16), transparent 70%),
+      repeating-linear-gradient(0deg, rgba(140,96,56,.045) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(90deg, rgba(140,96,56,.045) 0 1px, transparent 1px 4px);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--serif);
     font-size: 17px;
@@ -61,8 +63,24 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* autumn leaves drifting behind the letter */
+  .leaves {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* on phones the letter fills the screen, so a few leaves drift lightly across it instead */
+  @media (max-width: 599px) {
+    .leaves { z-index: 2; opacity: .7; }
+  }
+
   /* the letter: a sheet wrapped in the airmail ribbon */
   .letter {
+    position: relative;
+    z-index: 1;
     max-width: 560px;
     margin: 0 auto;
     min-height: 100vh;
@@ -98,8 +116,8 @@
   }
   .stamp-face {
     height: 100%;
-    background: #23408e;
-    color: #fff;
+    background: #a8401c;
+    color: #fbe3c4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -247,6 +265,23 @@
     padding-top: 6px;
   }
 
+  /* a pressed maple leaf tucked behind the photo */
+  .snap-wrap { position: relative; }
+  .snap-wrap .snapshot { z-index: 1; }
+  .pressed {
+    position: absolute;
+    z-index: 0;
+    width: 124px;
+    height: 124px;
+    top: -34px;
+    right: max(calc(50% - 236px), -22px);
+    transform: rotate(32deg);
+    filter: drop-shadow(0 3px 4px rgba(90, 40, 10, .25));
+  }
+
+  /* a little drift of leaves under the sign-off */
+  .leaf-drift { display: block; width: 150px; height: 46px; margin: 10px auto 0; }
+
   /* ---------- sticker of the week ---------- */
   .sticker-stage {
     position: relative;
@@ -274,7 +309,7 @@
   .sticker {
     position: absolute;
     inset: 0;
-    border-radius: 4.8% / 3.43%;
+    border-radius: 5.33% / 3.81%;
     overflow: hidden;
     filter: drop-shadow(var(--sx) var(--sy) 14px rgba(20, 28, 50, .32));
     cursor: pointer;
@@ -284,8 +319,8 @@
   /* rainbow foil over the art window only, strongest where the light is */
   .sticker .foil {
     inset: auto;
-    left: 6.4%; top: 11.14%; width: 87.2%; height: 44.76%;
-    border-radius: 1.8%;
+    left: 7.07%; top: 12.67%; width: 85.87%; height: 42.67%;
+    border-radius: 1.4%;
     background:
       radial-gradient(farthest-corner circle at var(--gx) var(--gy),
         rgba(255,255,255,0) 0%, rgba(255,255,255,.5) 45%, #fff 90%),
@@ -769,6 +804,169 @@
     color: var(--air-blue);
   }
 
+  /* ---------- the video highlight ---------- */
+  .snapshot.clip { max-width: 300px; }
+  .snapshot video {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #1b1410;
+  }
+  .snapshot figcaption.long {
+    font-size: 23px;
+    line-height: 1.2;
+    padding: 10px 6px 4px;
+  }
+
+  /* ---------- random moments: a deck of squircle cards ---------- */
+  .deck-section { overflow: hidden; }   /* flung cards vanish at the letter's edge */
+  .deck-hint {
+    margin: -6px 0 0;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--pencil);
+  }
+  .deck {
+    position: relative;
+    width: min(100%, 300px);
+    aspect-ratio: 3 / 4;
+    margin: 34px auto 0;
+    touch-action: pan-y;        /* vertical scrolling stays the page's, sideways is ours */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .deck:focus { outline: none; }
+  .deck:focus-visible { outline: 2px dashed var(--air-red); outline-offset: 18px; border-radius: 30px; }
+  .card {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 90%;
+    will-change: transform;
+    cursor: grab;
+    /* the shadow follows the squircle because it's drawn from the clipped face */
+    filter: drop-shadow(0 12px 16px rgba(60, 28, 10, .22)) drop-shadow(0 1px 2px rgba(60, 28, 10, .25));
+  }
+  .card.held { cursor: grabbing; }
+  .face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 22px;        /* fallback until the squircle path is measured */
+    background: #2b1d14;
+  }
+  .deck.sq .face { border-radius: 0; clip-path: var(--sq); }
+  .face img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+  .card.wide .ph { object-fit: contain; }
+  .card.wide .fill { filter: blur(20px) saturate(1.25) brightness(.78); transform: scale(1.3); }
+  /* a handwritten note in the card's bottom-left corner */
+  .card.has-cap .face::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 42%;
+    background: linear-gradient(transparent, rgba(20, 10, 4, .62));
+    pointer-events: none;
+  }
+  .card-cap {
+    position: absolute;
+    z-index: 1;
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
+    margin: 0;
+    font-family: var(--hand);
+    font-size: 30px;
+    line-height: 1.05;
+    color: #fff8ec;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+    transform: rotate(-2deg);
+    transform-origin: 0 100%;
+  }
+  /* ---------- this week's recommendation ---------- */
+  .rec {
+    display: grid;
+    grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+    gap: 22px;
+    align-items: center;
+  }
+  .rec-book {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 2px 5px 5px 2px;
+    transform: rotate(-2deg);
+    /* a hint of spine on the left and a book's weight underneath */
+    box-shadow: inset 4px 0 6px -3px rgba(0,0,0,.5),
+                0 2px 3px rgba(40, 20, 10, .25), 0 14px 24px rgba(40, 20, 10, .22);
+  }
+  .rec-text p { margin: 0; font-size: 16px; line-height: 1.6; }
+  .rec-text .rec-note {
+    margin-top: 12px;
+    font-family: var(--hand);
+    font-size: 28px;
+    line-height: 1.05;
+    color: var(--air-red);
+  }
+  @media (max-width: 379px) {
+    .rec { gap: 16px; }
+    .rec-text p { font-size: 15px; }
+  }
+  /* the slow-reader shelf: text first, book on the right */
+  .rec-flip { grid-template-columns: minmax(0, 1fr) minmax(0, 38%); }
+  .rec-flip .rec-book { transform: rotate(2deg); }
+  .read-progress { margin: 16px 0 14px; }
+  .read-track {
+    height: 12px;
+    border-radius: 6px;
+    background: var(--rule);
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(40, 20, 10, .15);
+  }
+  .read-fill {
+    height: 100%;
+    min-width: 12px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(-45deg,
+      var(--air-red) 0 6px, var(--ribbon-white) 6px 9px,
+      var(--air-blue) 9px 15px, var(--ribbon-white) 15px 18px);
+  }
+  .rec-text .read-count {
+    margin-top: 6px;
+    font-family: var(--hand);
+    font-size: 24px;
+    line-height: 1.1;
+    color: var(--air-blue);
+  }
+  .rec-text .read-note {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--pencil);
+  }
+  .deck-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 44px;
+  }
+  .deck-count {
+    margin: 0;
+    min-width: 4.5ch;
+    font-family: var(--hand);
+    font-size: 26px;
+    line-height: 1;
+    text-align: center;
+    color: var(--air-red);
+  }
+
   a:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
 
   @media (min-width: 600px) {
@@ -785,40 +983,67 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="maple-leaf" viewBox="-50 -50 100 100"><path d="M0 -48L8 -30L18 -36L14 -12L34 -24L30 -14L46 -12L36 0L42 6L22 10L26 22L8 16L4 30L2 30L2 48L-2 48L-2 30L-4 30L-8 16L-26 22L-22 10L-42 6L-36 0L-46 -12L-30 -14L-34 -24L-14 -12L-18 -36L-8 -30Z"/></symbol>
+    <symbol id="oak-leaf" viewBox="-50 -50 100 100"><path d="M0 -46Q12 -44 10 -34Q22 -32 16 -20Q30 -16 20 -4Q32 4 18 12Q26 24 10 24Q10 34 2 36L2 48L-2 48L-2 36Q-10 34 -10 24Q-26 24 -18 12Q-32 4 -20 -4Q-30 -16 -16 -20Q-22 -32 -10 -34Q-12 -44 0 -46Z"/></symbol>
+    <linearGradient id="pressed-fill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e3a03a"/>
+      <stop offset=".55" stop-color="#cf6a26"/>
+      <stop offset="1" stop-color="#a8381c"/>
+    </linearGradient>
+  </defs>
+</svg>
+<canvas class="leaves" id="leaves" aria-hidden="true"></canvas>
 <div class="letter">
 
   <header>
     <div class="franking" aria-hidden="true">
       <div class="stamp"><div class="stamp-face">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M22 3 2 11l7 2.5L20 6l-9 8.5V21l3.5-4.5L19 20z"/></svg>
+        <svg viewBox="-50 -50 100 100"><use href="#maple-leaf" x="-50" y="-50" width="100" height="100" fill="currentColor"/></svg>
         par avion
       </div></div>
       <svg class="cancel" viewBox="0 0 128 70" fill="none" stroke="currentColor">
         <circle cx="40" cy="35" r="27" stroke-width="2"/>
         <circle cx="40" cy="35" r="21" stroke-width="1"/>
-        <text x="40" y="31" text-anchor="middle" font-size="7.5" fill="currentColor" stroke="none" font-family="Georgia, serif">30 SEP</text>
+        <text x="40" y="31" text-anchor="middle" font-size="7.5" fill="currentColor" stroke="none" font-family="Georgia, serif">7 OCT</text>
         <text x="40" y="42" text-anchor="middle" font-size="9.5" fill="currentColor" stroke="none" font-family="Georgia, serif" font-weight="700">2026</text>
         <path d="M70 22c6-4 12 4 18 0s12 4 18 0 12 4 18 0M70 32c6-4 12 4 18 0s12 4 18 0 12 4 18 0M70 42c6-4 12 4 18 0s12 4 18 0 12 4 18 0M70 52c6-4 12 4 18 0s12 4 18 0 12 4 18 0" stroke-width="1.8"/>
       </svg>
     </div>
-    <p class="kicker">30 September 2026 edition</p>
+    <p class="kicker">7 October 2026 edition</p>
     <h1>Kunjum-Kunjum Post</h1>
     <p class="dateline">A newsletter with a readership of one</p>
   </header>
 
   <section class="poem" aria-labelledby="poem-title">
-    <h2 id="poem-title">Confession Page</h2>
+    <h2 id="poem-title">Autumn</h2>
 
     <div class="ruled">
-    <p>Due to a massive data leak (and a mental block), we regret to inform you that there's no poem this time around. So, so... to make up for it, here's a completely made-up story, pulled straight out of my arse, about a girl.</p>
+    <p>The hills have caught a slower fire,<br>
+    in copper, gold, and burgundy,<br>
+    and leaves drift down without desire,<br>
+    as if they're falling just to see.</p>
 
-    <p>Manasi, you know what? I think I'm in like with her. She's something else, honestly one of the most complete women I've ever met.</p>
+    <p>I walk the lane at half past four,<br>
+    the light gone honey-thick and low,<br>
+    and smoke from someone's chimney pours<br>
+    its gray across the afterglow.</p>
 
-    <p>She aces everything she touches: studies, dance, swimming, and, kunjum-kunjum, the piano. She's a books-and-romcoms nerd with annoyingly good taste in music, my very own RJ, a future dermatologist, and on top of all that, she just glows. I mean, what the actual fuxk? She's taking perfection to its absolute limit, and I'm standing here, simply awestruck. Uff, nazar na lage kisi ki.</p>
+    <p>The pumpkins sit on wooden stairs,<br>
+    the apples soften in the bowl,<br>
+    I save the light, the smoky air,<br>
+    a story folded in my soul.</p>
 
-    <p>In the end, I just want to tell her: <em>of all the places I could be, I want to be here with you.</em></p>
+    <p>I think of roads that stretch too far,<br>
+    of places that I cannot see,<br>
+    and let the thought be what they are,<br>
+    just leaves that settle over me.</p>
 
-    <p>So, Manasi... what should I do about her?</p>
+    <p>The evening wraps the world in rust,<br>
+    the lamps come on in amber rows,<br>
+    and I go home, as all things must,<br>
+    to one warm cup, the show she chose.</p>
     </div>
 
     <p class="signoff">x</p>
@@ -828,8 +1053,9 @@
     <h2 id="song-title">Song of this edition</h2>
     <!-- To change the song: in Spotify, Share > Copy Song Link, then put the ID
          (the part after /track/ and before any ?) in place of the ID in the link below. -->
+    <p class="scrawl">From my side of 5 percent</p>
     <iframe class="song-frame"
-      src="https://open.spotify.com/embed/track/5rdLIlhXJYTMUDGM45mL7d?utm_source=generator"
+      src="https://open.spotify.com/embed/track/66h3xcrTooMC9AxV8g0Y75?utm_source=generator"
       title="Song of this edition on Spotify"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="lazy"></iframe>
@@ -837,22 +1063,77 @@
 
   <section aria-labelledby="highlight-title">
     <h2 id="highlight-title">This edition's highlight</h2>
-    <figure class="snapshot">
-      <img src="assets/week1H.jpeg" alt="A photo from 15 August 2021 of her striking a pose with one hand on her hip, in a white Fashion tee, open on the phone during our video call" width="568" height="1280">
-      <figcaption>My Cutie Patootie</figcaption>
+    <div class="snap-wrap">
+    <svg class="pressed" viewBox="-50 -50 100 100" aria-hidden="true">
+      <use href="#maple-leaf" x="-50" y="-50" width="100" height="100" fill="url(#pressed-fill)" opacity=".93"/>
+      <path d="M0 44L0 -38M0 -6L24 -18M0 -6L-24 -18M0 12L28 4M0 12L-28 4M0 -20L10 -32M0 -20L-10 -32" fill="none" stroke="#7c2a12" stroke-opacity=".35" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <figure class="snapshot clip">
+      <video src="assets/w2media1.mp4#t=0.1" width="464" height="832" controls playsinline preload="metadata"
+        aria-describedby="clip-caption"></video>
+      <figcaption id="clip-caption" class="long">Half asleep, I read a paper over my usual morning business and left it on the floor. Came home, saw a paper lying on the floor, and was honestly shocked. Who could have put that there?</figcaption>
     </figure>
+    </div>
+  </section>
+
+  <section class="deck-section" aria-labelledby="deck-title">
+    <h2 id="deck-title">Random Bullshit Go Moments</h2>
+    <p class="deck-hint">Flick the top one away, left or right.</p>
+    <!-- To add a moment: copy a .card line. Landscape photos get class="card wide"
+         and the extra blurred "fill" image so they sit nicely in the tall card. -->
+    <div class="deck" id="deck" tabindex="0" role="group" aria-roledescription="stack of photos"
+      aria-label="Random moments. Use the left and right arrow keys to go through them.">
+      <div class="card has-cap"><div class="face"><img class="ph" src="assets/w2media6.jpeg" alt="A sunny autumn street corner: a bright flower bed, chestnut trees turning copper and a tall yellow old building under a deep blue sky" draggable="false" decoding="async"><p class="card-cap">Autumn is here</p></div></div>
+      <div class="card"><div class="face"><img class="ph" src="assets/w2media2.jpeg" alt="A Kinder Joy egg in a One Piece and Funko edition, held up over the shopping trolley at the checkout" draggable="false" decoding="async"></div></div>
+      <div class="card"><div class="face"><img class="ph" src="assets/w2media3.jpeg" alt="A selfie from below in a warehouse store, hugging an enormous yellow plush toy" draggable="false" decoding="async"></div></div>
+      <div class="card wide has-cap"><div class="face"><img class="fill" src="assets/w2media4.jpeg" alt="" draggable="false" decoding="async"><img class="ph" src="assets/w2media4.jpeg" alt="An Indian restaurant decked out in gold: carved gilded chairs with red velvet, a gold display cabinet and red damask wallpaper" draggable="false" decoding="async"><p class="card-cap">Rajasthani Restaurant in Graz!?</p></div></div>
+      <div class="card wide has-cap"><div class="face"><img class="fill" src="assets/w2media5.jpeg" alt="" draggable="false" decoding="async"><img class="ph" src="assets/w2media5.jpeg" alt="A big, nearly empty room with a mattress on the parquet floor, two armchairs, a fan and suitcases still waiting by the wall" draggable="false" decoding="async"><p class="card-cap">Glow-up incoming</p></div></div>
+    </div>
+    <div class="deck-controls">
+      <p class="deck-count" id="deck-count" aria-live="polite">1 of 5</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="rec-title">
+    <h2 id="rec-title">This Week's Recommendation</h2>
+    <div class="rec">
+      <img class="rec-book" src="assets/w2book2.jpg" width="314" height="475" loading="lazy" decoding="async"
+        alt="Cover of The Ultimate Hitchhiker's Guide to the Galaxy by Douglas Adams, five novels in one volume">
+      <div class="rec-text">
+        <p>The sprawling space odyssey that taught humanity the answer to life, the universe and everything is 42. The real trick is figuring out why you needed a towel to survive a planet demolition in the first place.</p>
+        <p class="rec-note">Don't panic. Bring a towel.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="slow-title">
+    <h2 id="slow-title">Slow Readers Unite</h2>
+    <div class="rec rec-flip">
+      <div class="rec-text">
+        <p>Currently reading, at a pace best described as scenic.</p>
+        <!-- EACH EDITION: change the 5 in aria-valuenow, aria-valuetext, the width calc and "Chapter 5" -->
+        <div class="read-progress" role="progressbar" aria-label="Reading progress"
+          aria-valuemin="0" aria-valuemax="58" aria-valuenow="5" aria-valuetext="Chapter 5 of 58">
+          <div class="read-track"><div class="read-fill" style="width: calc(5 / 58 * 100%)"></div></div>
+          <p class="read-count">Chapter 5 of 58</p>
+        </div>
+        <p class="read-note">A proper review of the story so far is on its way, held up (as always) by a paper deadline.</p>
+      </div>
+      <img class="rec-book" src="assets/w2book1.jpg" width="313" height="500" loading="lazy" decoding="async"
+        alt="Cover of The Ex by Freida McFadden: a hand holding a compact mirror reflecting dark lips">
+    </div>
   </section>
 
   <section aria-labelledby="sticker-title">
     <h2 id="sticker-title">Sticker of the week</h2>
     <p class="collect">A new one every edition. Collect them all!</p>
     <!-- EACH EDITION: change data-edition to the new date so the pack comes back sealed -->
-    <div class="sticker-stage" id="sticker-stage" data-edition="2026-09-30">
+    <div class="sticker-stage" id="sticker-stage" data-edition="2026-10-07">
       <div class="holo sealed" id="holo">
 
         <div class="pack-back" id="pack-back" aria-hidden="true"><div class="lining"></div></div>
-        <div class="sticker" id="sticker" role="button" tabindex="-1" aria-hidden="true" aria-haspopup="dialog" aria-label="Holographic collector card of Snoopy hugging Woodstock, 30 September 2026. Open to download it.">
-          <img class="art" id="card-art" alt="" width="750" height="1050" src="assets/snoopy-woodstock-card.webp">
+        <div class="sticker" id="sticker" role="button" tabindex="-1" aria-hidden="true" aria-haspopup="dialog" aria-label="Holographic collector card of Puss and Kitty pressing their paws together through glass, 7 October 2026. Open to download it.">
+          <img class="art" id="card-art" alt="" width="750" height="1050" src="assets/puss-kitty-card.webp">
           <div class="foil"></div>
           <div class="sheen"></div>
           <div class="etch"></div>
@@ -883,7 +1164,7 @@
             <div class="skin">
               <div class="pack-frame"></div>
               <div class="pack-brand">Kunjum-Kunjum Post</div>
-              <div class="pack-sub">Sticker of the week, 30 Sep 2026</div>
+              <div class="pack-sub">Sticker of the week, 7 Oct 2026</div>
 
               <div class="pack-art">
                 <img src="assets/milkmocha.jpg" alt="" width="512" height="512" decoding="async">
@@ -894,7 +1175,7 @@
               <span class="glint"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.5 5.5 11.4 12 12-6.5.6-11.4 5.5-12 12-.6-6.5-5.5-11.4-12-12C6.5 11.4 11.4 6.5 12 0z" fill="currentColor"/></svg></span>
               <span class="glint"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.5 5.5 11.4 12 12-6.5.6-11.4 5.5-12 12-.6-6.5-5.5-11.4-12-12C6.5 11.4 11.4 6.5 12 0z" fill="currentColor"/></svg></span>
 
-              <div class="pack-meta">Pack 001 of 012</div>
+              <div class="pack-meta">Pack 002 of 012</div>
 
               <div class="puff"></div>
               <div class="crimp bottom"></div>
@@ -912,11 +1193,11 @@
     <p class="save-hint" id="save-hint"></p>
     <button class="reseal" id="reseal" type="button" hidden>Wrap it back up</button>
     <dialog class="save-dialog" id="save-dialog" aria-labelledby="save-title">
-      <img src="assets/snoopy-woodstock-card.webp" alt="Collector card: Snoopy and Woodstock" id="save-preview" width="150" height="210" loading="lazy">
+      <img src="assets/puss-kitty-card.webp" alt="Collector card: Puss and Kitty" id="save-preview" width="150" height="210" loading="lazy">
       <p id="save-title">Want to keep this one?</p>
       <div class="save-actions">
-        <a id="save-card" href="assets/snoopy-woodstock-card.png" download="snoopy-woodstock-card.png">Download the card</a>
-        <a id="save-link" class="plain" href="assets/snoopy.jpg" download="snoopy.jpg">Just the sticker</a>
+        <a id="save-card" href="assets/puss-kitty-card.png" download="puss-kitty-card.png">Download the card</a>
+        <a id="save-link" class="plain" href="assets/puss-kitty.jpg" download="puss-kitty.jpg">Just the picture</a>
         <button type="button" id="save-cancel">Not now</button>
       </div>
     </dialog>
@@ -937,80 +1218,98 @@
     <h2 id="reels-title">Reels I saved for you</h2>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DbjlLhBzCHn/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DbjlLhBzCHn/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by 🇺🇸 Snoopy Lover's US 🇺🇸 (@snoopy_lover_us)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeH4o4cy9l5/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeH4o4cy9l5/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd11gzAsS6S/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/Dd11gzAsS6S/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by @pgotguts</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcQF8LJoSzD/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DcQF8LJoSzD/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd1TyeJOFb2/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/Dd1TyeJOFb2/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Aarjav Jain (@aarjavcore)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DeE7iJjvJhl/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/p/DeE7iJjvJhl/" target="_blank" rel="noopener">View this post on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddahzo0MVrh/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/Ddahzo0MVrh/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Pratyush🇮🇳 &amp; Ksenia🇷🇺 |Couple comedy hub, Reels, funny videos (@annoyingtogether)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeFX0cgB0cj/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeFX0cgB0cj/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddai5ZlN0e-/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/Ddai5ZlN0e-/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Fabiana Solano (@fabianamsolano)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddhl1S_qxuX/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Ddhl1S_qxuX/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdKAqakpMUx/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdKAqakpMUx/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Mr. Cinemagic (@mr.cinemagic)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeHn6x7xDl9/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeHn6x7xDl9/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcENL8Toawt/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DcENL8Toawt/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Lev (@levxpiano)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeEeNWdJmcc/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeEeNWdJmcc/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdWT_KeTKvE/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdWT_KeTKvE/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Ishaan (@iishaanar)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeJIOrpTiH1/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeJIOrpTiH1/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdtWJbyyrE2/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdtWJbyyrE2/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by Janya Masand🍁 (@janya_jm)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdOhA_1y3LY/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DdOhA_1y3LY/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Ddq9zEdyXqH/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/Ddq9zEdyXqH/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by ickinsick (@ickinsick)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DduAfRKyjTR/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DduAfRKyjTR/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdbrR-0IMZ-/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdbrR-0IMZ-/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by RJ Princy Parikh (@princyparriikh)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd9LqPBoIRA/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Dd9LqPBoIRA/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DdoWQdFOipj/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/DdoWQdFOipj/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by 🪼 (@iheartjwm)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/Dd9faNLtCte/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/p/Dd9faNLtCte/" target="_blank" rel="noopener">View this post on Instagram</a>
       </blockquote>
     </div>
 
     <div class="embed">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd2ilb_ubcV/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
-        <a class="fallback" href="https://www.instagram.com/reel/Dd2ilb_ubcV/" target="_blank" rel="noopener">View this reel on Instagram<span>A post shared by EMMA WALZ (@mrsemmawalz)</span></a>
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/Dd9DxB7voBY/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/Dd9DxB7voBY/" target="_blank" rel="noopener">View this reel on Instagram</a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeExLu1ztTb/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeExLu1ztTb/" target="_blank" rel="noopener">View this reel on Instagram</a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeDkqjzBuNk/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeDkqjzBuNk/" target="_blank" rel="noopener">View this reel on Instagram</a>
+      </blockquote>
+    </div>
+
+    <div class="embed">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DeHejwQKdHs/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px;max-width:540px;min-width:300px;padding:0;width:100%;">
+        <a class="fallback" href="https://www.instagram.com/reel/DeHejwQKdHs/" target="_blank" rel="noopener">View this reel on Instagram</a>
       </blockquote>
     </div>
 
@@ -1021,6 +1320,13 @@
 
   <footer>
     See you next week
+    <svg class="leaf-drift" viewBox="0 0 150 46" aria-hidden="true">
+      <use href="#oak-leaf" x="6" y="14" width="30" height="30" fill="#b8862f" transform="rotate(-24 21 29)"/>
+      <use href="#maple-leaf" x="36" y="6" width="38" height="38" fill="#c4451c" transform="rotate(14 55 25)"/>
+      <use href="#oak-leaf" x="72" y="16" width="26" height="26" fill="#8c4a22" transform="rotate(62 85 29)"/>
+      <use href="#maple-leaf" x="96" y="10" width="32" height="32" fill="#e2a83a" transform="rotate(-38 112 26)"/>
+      <use href="#oak-leaf" x="124" y="20" width="22" height="22" fill="#a8321f" transform="rotate(20 135 31)"/>
+    </svg>
   </footer>
 
 </div>
@@ -1392,7 +1698,7 @@
 
   // little hearts and glints fly out as the card appears
   function burst() {
-    var bits = ['\u2665', '\u2726', '\u2665', '\u2727'];
+    var bits = ['\u2665', '\uD83C\uDF41', '\u2726', '\uD83C\uDF42', '\u2665', '\u2727'];
     var colors = ['#c8323c', '#23408e', '#e9b949', '#ef6b73', '#7f9cf0'];
     for (var i = 0; i < 22; i++) {
       var s = document.createElement('span');
@@ -1436,6 +1742,460 @@
   pack.hidden = packBack.hidden = !sealed;
   measure();
   refresh();
+})();
+</script>
+<script>
+/* ---- random moments: a deck you flick through, every move on springs so it overshoots and settles ---- */
+(function () {
+  var deck = document.getElementById('deck');
+  if (!deck) return;
+  var cards = [].slice.call(deck.querySelectorAll('.card'));
+  var n = cards.length;
+  if (!n) return;
+  var countEl = document.getElementById('deck-count');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var TILT = [-2.6, 3.2, -1.7, 2.4, -3.3, 1.8];   // how each card sits crooked in the pile
+  var K = 260, D = 17;                            // spring: underdamped, so it rubber-bands past and back
+  var order = cards.map(function (_, i) { return i; });   // order[0] is the top card
+  var st = cards.map(function () { return { x: 0, y: 0, r: 0, s: 1, vx: 0, vy: 0, vr: 0, vs: 0, fly: 0 }; });
+  var W = 300, H = 400, SW = 500;
+  var drag = null, running = false, last = 0;
+
+  // continuous-curvature (G2) corners: each corner is a quarter of a superellipse,
+  // whose curvature fades to zero where it meets the straight edge
+  function squircle(w, h, R, e) {
+    R = Math.min(R, w / 2, h / 2);
+    var pts = [], N = 16, q = 2 / e, HP = Math.PI / 2;
+    function corner(cx, cy, sx, sy, a0, a1) {
+      for (var k = 0; k <= N; k++) {
+        var t = a0 + (a1 - a0) * k / N;
+        pts.push((cx + sx * R * Math.pow(Math.abs(Math.cos(t)), q)).toFixed(2) + ' ' +
+                 (cy + sy * R * Math.pow(Math.abs(Math.sin(t)), q)).toFixed(2));
+      }
+    }
+    corner(w - R, R, 1, -1, HP, 0);
+    corner(w - R, h - R, 1, 1, 0, HP);
+    corner(R, h - R, -1, 1, HP, 0);
+    corner(R, R, -1, -1, 0, HP);
+    return 'M' + pts.join('L') + 'Z';
+  }
+  var canClip = window.CSS && CSS.supports && CSS.supports('clip-path', 'path("M0 0L1 0L1 1Z")');
+
+  function measure() {
+    W = deck.clientWidth; H = deck.clientHeight;
+    SW = deck.parentNode.clientWidth;
+    if (canClip && W) {
+      deck.style.setProperty('--sq', "path('" + squircle(W, H, Math.min(W, H) * 0.17, 4.6) + "')");
+      deck.classList.add('sq');
+    }
+  }
+
+  var outX = function () { return SW / 2 + W * 0.9; };       // where a flung card heads
+  var goneX = function () { return SW / 2 + W * 0.55; };     // past here it's out of sight
+
+  function target(i) {
+    var s = st[i];
+    if (s.fly) return { x: s.fly * outX(), y: H * 0.06, r: s.fly * 22, s: 1 };
+    var d = order.indexOf(i);
+    if (d === 0) return { x: 0, y: 0, r: 0, s: 1 };
+    var k = Math.min(d, 3);
+    return { x: 0, y: k * 11, r: TILT[i % TILT.length], s: 1 - 0.05 * k };
+  }
+
+  function render() {
+    for (var i = 0; i < n; i++) {
+      var s = st[i], c = cards[i];
+      c.style.transform = 'translate3d(' + s.x.toFixed(2) + 'px,' + s.y.toFixed(2) + 'px,0) rotate(' +
+        s.r.toFixed(2) + 'deg) scale(' + s.s.toFixed(4) + ')';
+      c.style.zIndex = s.fly ? n + 1 : n - order.indexOf(i);
+    }
+  }
+
+  function springProp(s, p, v, t, dt) {
+    var a = K * (t - s[p]) - D * s[v];
+    s[v] += a * dt;
+    s[p] += s[v] * dt;
+    return Math.abs(s[v]) > 0.02 || Math.abs(t - s[p]) > 0.02;
+  }
+
+  function step(dt) {
+    var moving = !!drag;
+    for (var i = 0; i < n; i++) {
+      if (drag && drag.i === i) continue;
+      var s = st[i], t = target(i);
+      if (reduce) { s.fly = 0; t = target(i); s.x = t.x; s.y = t.y; s.r = t.r; s.s = t.s; continue; }
+      var m = false;
+      m = springProp(s, 'x', 'vx', t.x, dt) || m;
+      m = springProp(s, 'y', 'vy', t.y, dt) || m;
+      m = springProp(s, 'r', 'vr', t.r, dt) || m;
+      // scale is in units of 1, so give it the same feel by working in percent
+      s.s *= 100; s.vs *= 100;
+      m = springProp(s, 's', 'vs', t.s * 100, dt) || m;
+      s.s /= 100; s.vs /= 100;
+      // a flung card, once out of sight, gets tucked back under the pile
+      if (s.fly && Math.abs(s.x) > goneX()) s.fly = 0, m = true;
+      moving = moving || m;
+    }
+    return moving;
+  }
+
+  function loop(now) {
+    var dt = Math.min(0.04, (now - last) / 1000 || 0.016);
+    last = now;
+    var moving = false, sub = Math.ceil(dt / 0.006);
+    for (var k = 0; k < sub; k++) moving = step(dt / sub) || moving;
+    render();
+    if (moving) requestAnimationFrame(loop);
+    else running = false;
+  }
+  function kickLoop() {
+    if (running) return;
+    running = true; last = performance.now();
+    requestAnimationFrame(loop);
+  }
+
+  function updateUi() {
+    var top = order[0];
+    cards.forEach(function (c, i) { c.setAttribute('aria-hidden', i === top ? 'false' : 'true'); });
+    if (countEl) countEl.textContent = (top + 1) + ' of ' + n;
+  }
+
+  function fling(dir) {
+    var i = order[0], s = st[i];
+    if (!reduce) s.fly = dir;
+    order.push(order.shift());
+    var next = st[order[0]];
+    next.vs += 0.9;                   // the card underneath pops up to meet you
+    updateUi(); kickLoop();
+  }
+  function goNext(dir) {
+    if (drag) return;
+    st[order[0]].vx += dir * 900;
+    st[order[0]].vr += dir * 40;
+    fling(dir);
+  }
+  function goPrev() {
+    if (drag) return;
+    var i = order.pop();
+    order.unshift(i);
+    var s = st[i];
+    if (!s.fly && !reduce) {            // bring it back in from the side it left by
+      s.x = -outX(); s.y = H * 0.06; s.r = -22; s.s = 1;
+      s.vx = s.vy = s.vr = s.vs = 0;
+    }
+    s.fly = 0;
+    updateUi(); kickLoop();
+  }
+
+  // dragging: sideways follows the finger, up and down only gives a little, like stretching a rubber band
+  function rubber(d) { var c = 60; return (d < 0 ? -1 : 1) * c * (1 - 1 / (Math.abs(d) / c * 0.6 + 1)); }
+
+  deck.addEventListener('pointerdown', function (e) {
+    if (e.button > 0 || drag) return;
+    var i = order[0];
+    if (!cards[i].contains(e.target)) return;
+    var s = st[i];
+    s.fly = 0;
+    drag = { i: i, id: e.pointerId, x0: e.clientX, y0: e.clientY, bx: s.x, samples: [] };
+    cards[i].classList.add('held');
+    try { deck.setPointerCapture(e.pointerId); } catch (err) {}
+    kickLoop();
+  });
+  deck.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var s = st[drag.i];
+    s.x = drag.bx + (e.clientX - drag.x0);
+    s.y = rubber(e.clientY - drag.y0);
+    s.r = Math.max(-24, Math.min(24, s.x * 0.075));
+    s.s = 1 + Math.min(0.03, Math.abs(s.x) / 4000);
+    var now = performance.now();
+    drag.samples.push({ t: now, x: s.x });
+    while (drag.samples.length > 2 && now - drag.samples[0].t > 90) drag.samples.shift();
+    kickLoop();
+  });
+  function release(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var i = drag.i, s = st[i], sm = drag.samples, vx = 0;
+    if (sm.length > 1) {
+      var a = sm[0], b = sm[sm.length - 1];
+      vx = (b.x - a.x) / Math.max(16, b.t - a.t) * 1000;
+    }
+    cards[i].classList.remove('held');
+    drag = null;
+    s.vx = vx; s.vy = 0; s.vr = vx * 0.05; s.vs = 0;
+    var far = Math.abs(s.x) > W * 0.3;
+    var quick = Math.abs(vx) > 650 && (vx > 0) === (s.x > 0) && Math.abs(s.x) > 12;
+    if (far || quick) fling(s.x < 0 ? -1 : 1);
+    else kickLoop();                  // not far enough: it snaps back, wobbling into place
+  }
+  deck.addEventListener('pointerup', release);
+  deck.addEventListener('pointercancel', release);
+  deck.addEventListener('lostpointercapture', release);
+
+  deck.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); goNext(-1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+  });
+
+  // left alone for a while, the top card gives a little nudge to say "swipe me"
+  var IDLE = 5000, idleTimer = 0, nudgeDir = -1, onScreen = false;
+  function resetIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(nudge, IDLE); }
+  function nudge() {
+    var s = st[order[0]];
+    if (!drag && !reduce && onScreen && !document.hidden && !s.fly) {
+      s.vx += nudgeDir * 720;          // the spring pulls it back with a wobble
+      s.vr += nudgeDir * 45;
+      nudgeDir = -nudgeDir;
+      kickLoop();
+    }
+    resetIdle();
+  }
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; if (onScreen) resetIdle(); },
+      { threshold: 0.6 }).observe(deck);
+  } else onScreen = true;
+  ['pointerdown', 'pointerup', 'keydown'].forEach(function (t) { deck.addEventListener(t, resetIdle); });
+  resetIdle();
+
+  measure();
+  // start settled in the pile, no animation on load
+  for (var i = 0; i < n; i++) { var t = target(i); st[i].x = t.x; st[i].y = t.y; st[i].r = t.r; st[i].s = t.s; }
+  render(); updateUi();
+  if (window.ResizeObserver) new ResizeObserver(function () { measure(); kickLoop(); }).observe(deck);
+  else window.addEventListener('resize', function () { measure(); kickLoop(); });
+})();
+</script>
+<script>
+/* ---- autumn leaves: they fall, sway, catch gusts, and now and then get caught in a little swirl ---- */
+(function () {
+  var cv = document.getElementById('leaves');
+  if (!cv || !cv.getContext || !window.Path2D) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var narrow = window.matchMedia ? matchMedia('(max-width: 599px)') : { matches: false };
+
+  // leaf shapes, drawn in a 100-unit box centred on 0,0
+  var SHAPES = [
+    new Path2D('M0 -48L8 -30L18 -36L14 -12L34 -24L30 -14L46 -12L36 0L42 6L22 10L26 22L8 16L4 30L2 30L2 48L-2 48L-2 30L-4 30L-8 16L-26 22L-22 10L-42 6L-36 0L-46 -12L-30 -14L-34 -24L-14 -12L-18 -36L-8 -30Z'),
+    new Path2D('M0 -46Q12 -44 10 -34Q22 -32 16 -20Q30 -16 20 -4Q32 4 18 12Q26 24 10 24Q10 34 2 36L2 48L-2 48L-2 36Q-10 34 -10 24Q-26 24 -18 12Q-32 4 -20 -4Q-30 -16 -16 -20Q-22 -32 -10 -34Q-12 -44 0 -46Z'),
+    new Path2D('M0 -48C26 -30 26 18 2 40L2 48L-2 48L-2 40C-26 18 -26 -30 0 -48Z')
+  ];
+  var RIB = new Path2D('M0 -40L0 44M0 -8L14 -20M0 -8L-14 -20M0 10L12 0M0 10L-12 0');
+  // [front, back] of each leaf
+  var COLORS = [
+    ['#c4451c', '#8e2f12'], ['#d9772b', '#a2521a'], ['#e2a83a', '#b07d22'],
+    ['#a8321f', '#741f12'], ['#b8862f', '#86601f'], ['#8c4a22', '#5f3015']
+  ];
+
+  var W = 0, H = 0, leaves = [], swirls = [], pile = [], count = 0;
+  var ptr = { x: 0, y: 0, on: false };
+  var t = 0, last = 0, running = false;
+  var gust = 0, gustTarget = 0, nextGust = 3, nextSwirl = 5;
+  var MAX_PILE = 60;
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+
+  function makeLeaf(atTop) {
+    var small = narrow.matches;
+    return {
+      x: rand(-20, W + 20),
+      y: atTop ? rand(-H * 0.25, -30) : rand(-30, H),
+      s: rand(small ? 0.17 : 0.22, small ? 0.27 : 0.42),
+      shape: pick(SHAPES), c: pick(COLORS),
+      fall: rand(30, 64), vx: 0, vy: 40,
+      land: rand(4, 26),
+      sway: rand(14, 42), swayF: rand(0.6, 1.4), ph: rand(0, 6.28),
+      rot: rand(0, 6.28), spin: rand(-1.4, 1.4),
+      flip: rand(0, 6.28), flipF: rand(1.2, 3.2)
+    };
+  }
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = narrow.matches ? Math.round(clamp(W * H / 45000, 6, 10))
+                           : Math.round(clamp(W * H / 30000, 16, 46));
+    count = n;
+    MAX_PILE = Math.round(clamp(W / 20, 20, 90));
+    while (leaves.length < n) leaves.push(makeLeaf(false));
+    leaves.length = n;
+    pile = pile.filter(function (p) { return p.x < W + 30; });
+    pile.forEach(function (p) { p.y = H - p.lift; });
+    if (reduce) draw();
+  }
+
+  function wind(y) {
+    return 16 * Math.sin(t * 0.11) + 9 * Math.sin(t * 0.29 + 1.3)
+         + gust * (0.65 + 0.35 * Math.sin(y * 0.008 + t * 0.7));
+  }
+
+  function step(dt) {
+    t += dt;
+
+    // gusts come and go
+    nextGust -= dt;
+    if (nextGust <= 0) { gustTarget = rand(-1, 1) * 110; nextGust = rand(5, 11); }
+    gustTarget *= Math.pow(0.55, dt);
+    gust += (gustTarget - gust) * Math.min(1, dt * 1.5);
+
+    // every so often a little whirlwind spins up somewhere on screen
+    nextSwirl -= dt;
+    if (nextSwirl <= 0) {
+      swirls.push({ x: rand(W * 0.1, W * 0.9), y: rand(H * 0.2, H * 0.8),
+                    r: rand(110, 200) * (narrow.matches ? 0.7 : 1),
+                    str: rand(120, 200) * (Math.random() < 0.5 ? -1 : 1),
+                    age: 0, life: rand(4, 7) });
+      nextSwirl = rand(6, 12);
+    }
+    for (var i = swirls.length - 1; i >= 0; i--) {
+      var w = swirls[i];
+      w.age += dt; w.x += wind(w.y) * dt * 0.4;
+      if (w.age >= w.life) swirls.splice(i, 1);
+    }
+
+    for (var j = 0; j < leaves.length; j++) {
+      var l = leaves[j];
+      var tx = wind(l.y) + l.sway * Math.cos(t * l.swayF + l.ph);
+      var ty = l.fall * (0.75 + 0.25 * Math.sin(t * l.swayF * 2 + l.ph));
+      for (var k = 0; k < swirls.length; k++) {
+        var sw = swirls[k];
+        var dx = l.x - sw.x, dy = l.y - sw.y, d2 = dx * dx + dy * dy;
+        var f = Math.exp(-d2 / (sw.r * sw.r * 0.4)) * Math.sin(Math.PI * sw.age / sw.life);
+        if (f < 0.01) continue;
+        var d = Math.sqrt(d2) || 1, v = sw.str * f;
+        tx += (-dy / d) * v - (dx / d) * Math.abs(v) * 0.12;   // round and slightly inward
+        ty += ( dx / d) * v - (dy / d) * Math.abs(v) * 0.12;
+      }
+      var ease = Math.min(1, dt * 2.2);
+      l.vx += (tx - l.vx) * ease;
+      l.vy += (ty - l.vy) * ease;
+      // leaves get brushed aside by the cursor or a finger
+      if (ptr.on) {
+        var px = l.x - ptr.x, py = l.y - ptr.y, pd = Math.sqrt(px * px + py * py) || 1;
+        if (pd < 120) {
+          var pf = (1 - pd / 120) * (1 - pd / 120) * 1100 * dt;
+          l.vx += px / pd * pf; l.vy += py / pd * pf;
+        }
+      }
+      l.x += l.vx * dt; l.y += l.vy * dt;
+      l.rot += (l.spin + l.vx * 0.012) * dt;
+      l.flip += l.flipF * dt * (1 + Math.abs(l.vx) / 90);
+
+      // some leaves come to rest in a heap along the bottom of the screen (behind the letter only)
+      if (!narrow.matches && l.vy > 0 && l.y > H - l.land && pile.length < MAX_PILE) {
+        pile.push({ x: l.x, lift: l.land, y: H - l.land, rot: l.rot, s: l.s,
+                    shape: l.shape, c: l.c[Math.cos(l.flip) >= 0 ? 0 : 1],
+                    sx: Math.cos(l.flip) < 0 ? -0.8 : 0.8, age: 0, life: rand(25, 50) });
+        l.y = H + 100;
+      }
+      if (l.y > H + 40) {
+        if (leaves.length > count) { leaves.splice(j, 1); j--; }
+        else leaves[j] = makeLeaf(true);
+      }
+      else if (l.x < -60) l.x = W + 50;
+      else if (l.x > W + 60) l.x = -50;
+    }
+  }
+
+  function stepPile(dt) {
+    for (var i = pile.length - 1; i >= 0; i--) {
+      pile[i].age += dt;
+      if (pile[i].age > pile[i].life + 3) pile.splice(i, 1);
+    }
+  }
+
+  // tap or click: the nearby leaves (and any in the heap) get flicked up into the air
+  function kick(x, y) {
+    leaves.forEach(function (l) {
+      var dx = l.x - x, dy = l.y - y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+      if (d < 170) { var f = 1 - d / 170; l.vx += dx / d * 300 * f; l.vy += (dy / d * 300 - 140) * f; l.spin += rand(-3, 3) * f; }
+    });
+    for (var i = pile.length - 1; i >= 0; i--) {
+      var p = pile[i], dx = p.x - x, dy = p.y - y;
+      if (dx * dx + dy * dy < 200 * 200) {
+        var l = makeLeaf(false);
+        l.x = p.x; l.y = p.y - 4; l.s = p.s; l.shape = p.shape; l.rot = p.rot;
+        l.vx = (dx < 0 ? -1 : 1) * rand(60, 200); l.vy = -rand(180, 320); l.spin = rand(-4, 4);
+        leaves.push(l);
+        pile.splice(i, 1);
+      }
+    }
+  }
+  document.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch' && !ptr.down) return;
+    ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true;
+  }, { passive: true });
+  document.addEventListener('pointerdown', function (e) {
+    ptr.down = true; ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true;
+    if (running) kick(e.clientX, e.clientY);
+  }, { passive: true });
+  ['pointerup', 'pointercancel'].forEach(function (t) {
+    document.addEventListener(t, function (e) { ptr.down = false; if (e.pointerType === 'touch') ptr.on = false; });
+  });
+  document.addEventListener('mouseout', function (e) { if (!e.relatedTarget) ptr.on = false; });
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for (var q = 0; q < pile.length; q++) {
+      var p = pile[q];
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.scale(p.sx * p.s, p.s);
+      ctx.globalAlpha = 0.9 * Math.min(1, p.age * 3) * Math.max(0, Math.min(1, (p.life + 3 - p.age) / 3));
+      ctx.fillStyle = p.c;
+      ctx.fill(p.shape);
+      ctx.strokeStyle = 'rgba(60, 25, 10, .3)';
+      ctx.lineWidth = 3;
+      ctx.stroke(RIB);
+      ctx.restore();
+    }
+    for (var i = 0; i < leaves.length; i++) {
+      var l = leaves[i];
+      var fx = Math.cos(l.flip);                      // tumbling: the leaf turns edge-on, then shows its back
+      var sx = (Math.abs(fx) < 0.15 ? 0.15 * (fx < 0 ? -1 : 1) : fx) * l.s;
+      ctx.save();
+      ctx.translate(l.x, l.y);
+      ctx.rotate(l.rot);
+      ctx.scale(sx, l.s);
+      ctx.globalAlpha = 0.92;
+      ctx.fillStyle = l.c[fx >= 0 ? 0 : 1];
+      ctx.fill(l.shape);
+      ctx.strokeStyle = 'rgba(60, 25, 10, .35)';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.stroke(RIB);
+      ctx.restore();
+    }
+  }
+
+  function loop(now) {
+    if (!running) return;
+    var dt = Math.min(0.05, (now - last) / 1000 || 0);
+    last = now;
+    step(dt); stepPile(dt); draw();
+    requestAnimationFrame(loop);
+  }
+  function start() {
+    if (running || reduce) return;
+    running = true; last = performance.now();
+    requestAnimationFrame(loop);
+  }
+  function stop() { running = false; }
+
+  window.addEventListener('resize', resize);
+  if (narrow.addEventListener) narrow.addEventListener('change', function () { leaves = []; resize(); });
+  document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+
+  // with reduced motion: a still scatter of leaves behind the letter, none over the text on phones
+  if (reduce && narrow.matches) { cv.style.display = 'none'; return; }
+  resize();
+  start();
 })();
 </script>
 <script async src="https://www.instagram.com/embed.js"></script>
