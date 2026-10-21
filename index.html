@@ -13,49 +13,136 @@
       background: #ffffff;
     }
     svg { width: min(400px, 90vw); height: auto; }
+
+    #cat { cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
+
+    #board {
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform 0.22s ease-in;
+    }
+    #board.squash { transform: scaleX(0); }
+    #board.expand { transition: transform 0.22s ease-out; }
+
+    #paws { transition: transform 0.22s ease-in-out; }
+    #paws.lift { transform: translateY(-8px); }
+
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <svg viewBox="0 0 400 400" role="img" aria-label="Cat in a construction hat holding an under maintenance sign">
+  <svg viewBox="0 0 400 400" role="img" aria-label="Cat in a construction hat holding an under maintenance sign. Tap to flip the sign.">
     <defs>
       <pattern id="hz" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
         <rect width="16" height="16" fill="#ffc93c"/>
         <rect width="8" height="16" fill="#2b2b2b"/>
       </pattern>
+      <clipPath id="photoClip">
+        <rect x="102" y="238" width="196" height="92" rx="6"/>
+      </clipPath>
     </defs>
+
     <ellipse cx="200" cy="378" rx="125" ry="10" fill="#000" opacity="0.08"/>
-    <path d="M270 320 Q345 315 332 245" fill="none" stroke="#f4a259" stroke-width="20" stroke-linecap="round"/>
-    <ellipse cx="200" cy="300" rx="88" ry="72" fill="#f4a259"/>
-    <ellipse cx="160" cy="366" rx="26" ry="12" fill="#f4a259"/>
-    <ellipse cx="240" cy="366" rx="26" ry="12" fill="#f4a259"/>
-    <path d="M140 132 L126 72 L178 100 Z" fill="#f4a259"/>
-    <path d="M260 132 L274 72 L222 100 Z" fill="#f4a259"/>
-    <path d="M144 122 L135 86 L166 104 Z" fill="#ffb3c1"/>
-    <path d="M256 122 L265 86 L234 104 Z" fill="#ffb3c1"/>
-    <circle cx="200" cy="155" r="72" fill="#f4a259"/>
-    <path d="M175 95 Q180 110 172 120 M200 92 L200 115 M225 95 Q220 110 228 120" fill="none" stroke="#e08a3c" stroke-width="5" stroke-linecap="round"/>
-    <path d="M142 108 Q144 48 200 46 Q256 48 258 108 Z" fill="#ffc93c"/>
-    <rect x="190" y="47" width="20" height="60" rx="5" fill="#f5b700"/>
-    <rect x="122" y="100" width="156" height="18" rx="9" fill="#f5b700"/>
-    <circle cx="174" cy="155" r="10" fill="#2b2b2b"/>
-    <circle cx="226" cy="155" r="10" fill="#2b2b2b"/>
-    <circle cx="177" cy="151" r="3.5" fill="#fff"/>
-    <circle cx="229" cy="151" r="3.5" fill="#fff"/>
-    <ellipse cx="155" cy="180" rx="12" ry="7" fill="#ff8fa3" opacity="0.55"/>
-    <ellipse cx="245" cy="180" rx="12" ry="7" fill="#ff8fa3" opacity="0.55"/>
-    <path d="M193 172 L207 172 L200 180 Z" fill="#ff8fa3"/>
-    <path d="M200 180 Q194 190 186 185 M200 180 Q206 190 214 185" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M150 172 L118 166 M150 180 L118 184 M250 172 L282 166 M250 180 L282 184" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/>
-    <rect x="92" y="228" width="216" height="112" rx="12" fill="#e9b872" stroke="#8b5a2b" stroke-width="4"/>
-    <rect x="104" y="240" width="192" height="18" rx="4" fill="url(#hz)"/>
-    <g font-family="'Trebuchet MS', Arial, sans-serif" text-anchor="middle">
-      <text x="200" y="288" font-size="22" font-weight="bold" fill="#5a3a1a">UNDER</text>
-      <text x="200" y="314" font-size="22" font-weight="bold" fill="#5a3a1a">MAINTENANCE</text>
-      <text x="200" y="332" font-size="13" fill="#7a5230">Back soon!</text>
+
+    <g id="cat" role="button" tabindex="0" aria-label="Flip the sign">
+      <!-- Body, tail, feet -->
+      <path d="M270 320 Q345 315 332 245" fill="none" stroke="#f4a259" stroke-width="20" stroke-linecap="round"/>
+      <ellipse cx="200" cy="300" rx="88" ry="72" fill="#f4a259"/>
+      <ellipse cx="160" cy="366" rx="26" ry="12" fill="#f4a259"/>
+      <ellipse cx="240" cy="366" rx="26" ry="12" fill="#f4a259"/>
+
+      <!-- Ears -->
+      <path d="M140 132 L126 72 L178 100 Z" fill="#f4a259"/>
+      <path d="M260 132 L274 72 L222 100 Z" fill="#f4a259"/>
+      <path d="M144 122 L135 86 L166 104 Z" fill="#ffb3c1"/>
+      <path d="M256 122 L265 86 L234 104 Z" fill="#ffb3c1"/>
+
+      <!-- Head -->
+      <circle cx="200" cy="155" r="72" fill="#f4a259"/>
+      <path d="M175 95 Q180 110 172 120 M200 92 L200 115 M225 95 Q220 110 228 120" fill="none" stroke="#e08a3c" stroke-width="5" stroke-linecap="round"/>
+
+      <!-- Hard hat -->
+      <path d="M142 108 Q144 48 200 46 Q256 48 258 108 Z" fill="#ffc93c"/>
+      <rect x="190" y="47" width="20" height="60" rx="5" fill="#f5b700"/>
+      <rect x="122" y="100" width="156" height="18" rx="9" fill="#f5b700"/>
+
+      <!-- Face -->
+      <circle cx="174" cy="155" r="10" fill="#2b2b2b"/>
+      <circle cx="226" cy="155" r="10" fill="#2b2b2b"/>
+      <circle cx="177" cy="151" r="3.5" fill="#fff"/>
+      <circle cx="229" cy="151" r="3.5" fill="#fff"/>
+      <ellipse cx="155" cy="180" rx="12" ry="7" fill="#ff8fa3" opacity="0.55"/>
+      <ellipse cx="245" cy="180" rx="12" ry="7" fill="#ff8fa3" opacity="0.55"/>
+      <path d="M193 172 L207 172 L200 180 Z" fill="#ff8fa3"/>
+      <path d="M200 180 Q194 190 186 185 M200 180 Q206 190 214 185" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M150 172 L118 166 M150 180 L118 184 M250 172 L282 166 M250 180 L282 184" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Board (flips) -->
+      <g id="board">
+        <g id="front">
+          <rect x="92" y="228" width="216" height="112" rx="12" fill="#e9b872" stroke="#8b5a2b" stroke-width="4"/>
+          <rect x="104" y="240" width="192" height="18" rx="4" fill="url(#hz)"/>
+          <g font-family="'Trebuchet MS', Arial, sans-serif" text-anchor="middle">
+            <text x="200" y="288" font-size="22" font-weight="bold" fill="#5a3a1a">UNDER</text>
+            <text x="200" y="314" font-size="22" font-weight="bold" fill="#5a3a1a">MAINTENANCE</text>
+            <text x="200" y="332" font-size="13" fill="#7a5230">Back soon!</text>
+          </g>
+        </g>
+
+        <g id="back" class="hidden">
+          <rect x="92" y="228" width="216" height="112" rx="12" fill="#e9b872" stroke="#8b5a2b" stroke-width="4"/>
+          <rect x="102" y="238" width="196" height="92" rx="6" fill="#ffffff"/>
+          <image href="assets/troll.jpeg"
+                 x="102" y="238" width="196" height="92"
+                 preserveAspectRatio="xMidYMid meet"
+                 clip-path="url(#photoClip)"/>
+        </g>
+      </g>
+
+      <!-- Paws (stay on top of the board) -->
+      <g id="paws">
+        <ellipse cx="138" cy="230" rx="20" ry="13" fill="#f4a259"/>
+        <ellipse cx="262" cy="230" rx="20" ry="13" fill="#f4a259"/>
+        <path d="M131 222 L131 232 M145 222 L145 232 M255 222 L255 232 M269 222 L269 232" stroke="#e08a3c" stroke-width="2" stroke-linecap="round"/>
+      </g>
     </g>
-    <ellipse cx="138" cy="230" rx="20" ry="13" fill="#f4a259"/>
-    <ellipse cx="262" cy="230" rx="20" ry="13" fill="#f4a259"/>
-    <path d="M131 222 L131 232 M145 222 L145 232 M255 222 L255 232 M269 222 L269 232" stroke="#e08a3c" stroke-width="2" stroke-linecap="round"/>
   </svg>
+
+  <script>
+    const cat = document.getElementById('cat');
+    const board = document.getElementById('board');
+    const front = document.getElementById('front');
+    const back = document.getElementById('back');
+    const paws = document.getElementById('paws');
+    const HALF = 220;
+    let busy = false;
+
+    function flip() {
+      if (busy) return;
+      busy = true;
+
+      paws.classList.add('lift');
+      board.classList.remove('expand');
+      board.classList.add('squash');
+
+      setTimeout(() => {
+        front.classList.toggle('hidden');
+        back.classList.toggle('hidden');
+        board.classList.add('expand');
+        board.classList.remove('squash');
+        paws.classList.remove('lift');
+
+        setTimeout(() => { busy = false; }, HALF);
+      }, HALF);
+    }
+
+    cat.addEventListener('click', flip);
+    cat.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        flip();
+      }
+    });
+  </script>
 </body>
 </html>
