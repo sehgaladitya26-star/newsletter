@@ -1,169 +1,1568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Under Maintenance</title>
-  <style>
-    html, body { height: 100%; margin: 0; }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      background: #ffffff;
-    }
-    svg { width: min(400px, 90vw); height: auto; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kunjum-Kunjum Post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Shippori+Mincho:wght@500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #e9e4ec;
+    --sheet: #fcfaf6;
+    --ink: #232a3e;
+    --pencil: #6e7287;
+    --air-blue: #3a4a78;      /* ai-iro indigo */
+    --air-red: #c9577a;       /* deep sakura */
+    --ribbon-white: #fdfcfa;
+    --rule: #e6dde3;
+    --line: #f1e1e7;
+    --stamp-paper: #fdfcfa;
+    --serif: "Literata", Georgia, "Times New Roman", serif;
+    --display: "Shippori Mincho", "Literata", Georgia, serif;
+    --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+    --ribbon: repeating-linear-gradient(-45deg,
+      #e9a1b6 0 14px, var(--ribbon-white) 14px 22px,
+      var(--air-blue) 22px 36px, var(--ribbon-white) 36px 44px);
+    --ribbon-small: repeating-linear-gradient(-45deg,
+      #e48aa3 0 6px, transparent 6px 9px,
+      var(--air-blue) 9px 15px, transparent 15px 18px);
 
-    #cat { cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
+    /* the landscape behind the letter */
+    --sky-top: #c9cbe3; --sky-mid: #f2dbe2; --sky-low: #f7ece6;
+    --sun: #fbe3dc; --sun-glow: rgba(255, 226, 220, .9);
+    --far: #c7c3d8; --fuji-top: #7d86ad; --fuji-low: #c3c1d7; --fuji-shade: rgba(60, 66, 110, .18);
+    --snow: #fbfbfd; --hill: #a9a8c3; --hill-d: #8e8db0; --mist: #fbf6f5; --mist-op: .8;
+    --bam-1: #6f9a6a; --bam-2: #a6c69a; --bam-3: #557d55; --bam-n: #d7e6c8; --bam-l: #79a46c;
+    --branch: #6b4a3a; --bl: #f4b6c6; --bl2: #fbdbe4; --bl-c: #e7a24a;
 
-    #board {
-      transform-box: fill-box;
-      transform-origin: center;
-      transition: transform 0.22s ease-in;
-    }
-    #board.squash { transform: scaleX(0); }
-    #board.expand { transition: transform 0.22s ease-out; }
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #141726;
+      --sheet: #1d2133;
+      --ink: #e9e7ef;
+      --pencil: #a2a4b8;
+      --air-blue: #9aa9e0;
+      --air-red: #f19ab4;
+      --ribbon-white: #e9e7ef;
+      --rule: #343a52;
+      --line: #2c3148;
+      --stamp-paper: #e9e7ef;
 
-    #paws { transition: transform 0.22s ease-in-out; }
-    #paws.lift { transform: translateY(-8px); }
+      --sky-top: #0f1222; --sky-mid: #262a4a; --sky-low: #3a3456;
+      --sun: #f3efe2; --sun-glow: rgba(220, 220, 255, .22);
+      --far: #2a2c4a; --fuji-top: #39406c; --fuji-low: #2a2c48; --fuji-shade: rgba(0, 0, 10, .3);
+      --snow: #d9dcef; --hill: #22243d; --hill-d: #1b1d33; --mist: #6b6e96; --mist-op: .35;
+      --bam-1: #2c4a35; --bam-2: #3f6649; --bam-3: #213a29; --bam-n: #5d8066; --bam-l: #335a3d;
+      --branch: #3c2c2a; --bl: #b7798e; --bl2: #8e6478; --bl-c: #b98a4a;
+    }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--paper) linear-gradient(var(--sky-top), var(--sky-mid) 55%, var(--sky-low)) fixed;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
 
-    .hidden { display: none; }
+  /* ---------- Fuji, bamboo and blossom, held still behind the letter ---------- */
+  .scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .scene .s-top { stop-color: var(--sky-top); }
+  .scene .s-mid { stop-color: var(--sky-mid); }
+  .scene .s-low { stop-color: var(--sky-low); }
+  .scene .sun-in { stop-color: var(--sun-glow); }
+  .scene .sun-out { stop-color: var(--sun-glow); stop-opacity: 0; }
+  .scene .sun { fill: var(--sun); }
+  .scene .far { fill: var(--far); }
+  .scene .f-top { stop-color: var(--fuji-top); }
+  .scene .f-low { stop-color: var(--fuji-low); }
+  .scene .fuji-sh { fill: var(--fuji-shade); }
+  .scene .snow { fill: var(--snow); }
+  .scene .hill { fill: var(--hill); }
+  .scene .hill-d { fill: var(--hill-d); }
+  .scene .mist { fill: var(--mist); opacity: var(--mist-op); }
+  .scene .fog-0 { stop-color: var(--mist); stop-opacity: 0; }
+  .scene .fog-1 { stop-color: var(--mist); stop-opacity: var(--mist-op); }
+  .scene .b-1 { stop-color: var(--bam-1); }
+  .scene .b-2 { stop-color: var(--bam-2); }
+  .scene .b-3 { stop-color: var(--bam-3); }
+  .scene .bam, .scene .bam-d { fill: url(#bamG); }
+  .scene .bam-d { opacity: .75; }
+  .scene .bam-n { fill: var(--bam-n); opacity: .8; }
+  .scene .bam-l { fill: var(--bam-l); }
+  .scene .bam-fog { fill: var(--mist); opacity: calc(var(--mist-op) * .6); }
+  .scene .branch { stroke: var(--branch); fill: none; stroke-linecap: round; }
+  .scene .bl { fill: var(--bl); }
+  .scene .bl2 { fill: var(--bl2); }
+  .scene .bl-c { fill: var(--bl-c); }
+  .scene .stalk { transform-box: fill-box; transform-origin: 50% 100%; animation: sway 9s ease-in-out infinite alternate; }
+  .scene .mist-a { animation: drift 46s ease-in-out infinite alternate; }
+  .scene .mist-b { animation: drift 62s ease-in-out -20s infinite alternate-reverse; }
+  @keyframes sway { from { transform: rotate(-.5deg); } to { transform: rotate(.6deg); } }
+  @keyframes drift { from { transform: translateX(-60px); } to { transform: translateX(80px); } }
 
-    .hint {
-      font-family: 'Trebuchet MS', Arial, sans-serif;
-      font-size: 15px;
-      color: #7a5230;
-      margin: 0;
-      animation: nudge 1.6s ease-in-out infinite;
+  /* sakura petals drifting down */
+  .petals { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+  @media (max-width: 599px) { .petals { opacity: .75; } }
+
+  /* ---------- the letter ---------- */
+  .letter {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 100vh;
+    border: 10px solid transparent;
+    background:
+      linear-gradient(var(--sheet), var(--sheet)) padding-box,
+      var(--ribbon) border-box;
+  }
+  /* washi fibres in the paper */
+  .letter::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .5;
+    background:
+      radial-gradient(1px 9px at 20% 30%, rgba(160,140,150,.18), transparent),
+      radial-gradient(8px 1px at 70% 12%, rgba(160,140,150,.16), transparent),
+      radial-gradient(1px 7px at 82% 64%, rgba(160,140,150,.16), transparent),
+      radial-gradient(10px 1px at 32% 82%, rgba(160,140,150,.16), transparent);
+    background-size: 120px 140px, 160px 110px, 140px 170px, 180px 130px;
+  }
+
+  /* ---------- masthead ---------- */
+  header { position: relative; padding: 34px 20px 0; }
+  .franking { position: absolute; top: 22px; right: 16px; width: 128px; height: 104px; z-index: 1; }
+  .stamp {
+    position: absolute; right: 0; top: 0;
+    width: 76px; height: 92px; padding: 6px;
+    transform: rotate(4deg);
+    background: radial-gradient(circle at 4px 4px, transparent 2.6px, var(--stamp-paper) 3px) -4px -4px / 8px 8px;
+    filter: drop-shadow(0 1px 1.5px rgba(30,36,64,.25));
+  }
+  .stamp-face {
+    height: 100%;
+    background: linear-gradient(#f6d4dc, #fbeee9 62%, #dfe2f0 62%);
+    color: #3a4a78;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding-bottom: 5px;
+    text-align: center;
+    font-size: 9.5px;
+    line-height: 1.1;
+    letter-spacing: .08em;
+    position: relative;
+    overflow: hidden;
+  }
+  .stamp-face svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stamp-face span { position: relative; font-weight: 600; }
+  .cancel {
+    position: absolute; left: 0; top: 26px; width: 128px; height: 70px;
+    color: var(--air-red); opacity: .7; transform: rotate(-8deg);
+  }
+  .kicker { margin: 0 0 8px; font-size: 14px; font-style: italic; color: var(--pencil); }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(40px, 11vw, 54px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin: 0;
+    max-width: 7ch;
+  }
+  .dateline { margin: 16px 0 0; font-family: var(--hand); font-size: 24px; line-height: 1.1; color: var(--air-red); }
+  /* a small misty Fuji under the masthead, so phones get the view too */
+  .vista { display: block; width: calc(100% + 40px); height: 120px; margin: 14px -20px 0; }
+  .vista .v-fuji { fill: var(--fuji-top); opacity: .55; }
+  .vista .v-snow { fill: var(--sheet); }
+  .vista .v-hill { fill: var(--hill); opacity: .35; }
+  .vista .v-sun { fill: #f4b6c6; opacity: .55; }
+  .vista .v-mist { stop-color: var(--sheet); }
+
+  /* ---------- sections ---------- */
+  section, footer { position: relative; padding: 36px 20px; }
+  section::before, footer::before {
+    content: ""; position: absolute; top: 0; left: 12px; right: 12px; height: 3px;
+    background: radial-gradient(circle, var(--rule) 1.4px, transparent 1.8px) 0 0 / 9px 3px repeat-x;
+  }
+  h2 { font-family: var(--display); font-weight: 500; font-size: 27px; margin: 0 0 22px; line-height: 1.25; }
+  h2::after { content: ""; display: block; width: 46px; height: 5px; margin-top: 12px; background: var(--ribbon-small); border-radius: 1px; }
+
+  /* ---------- poem on ruled letter paper ---------- */
+  .poem h2 { max-width: 15ch; }
+  .ruled {
+    font-size: 17.5px;
+    line-height: 1.75;
+    background: linear-gradient(transparent calc(1.75em - 1px), var(--line) calc(1.75em - 1px)) 0 -3px / 100% 1.75em;
+  }
+  .ruled p { margin: 0 0 1.75em; }
+  .ruled p:last-child { margin-bottom: 0; }
+  .ps { position: relative; margin: 30px 0 0; padding-right: 92px; font-size: 15px; font-style: italic; line-height: 1.55; color: var(--pencil); }
+  .ps b { font-style: normal; font-weight: 600; color: var(--ink); }
+  /* HR's rubber stamp */
+  .hanko {
+    position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%) rotate(-11deg);
+    font: 600 12px/1 var(--serif);
+    font-style: normal;
+    letter-spacing: .16em;
+    color: var(--air-red);
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    padding: 6px 7px 5px;
+    opacity: .85;
+    box-shadow: inset 0 0 0 2px var(--sheet), inset 0 0 0 3px currentColor;
+  }
+  .signoff { font-family: var(--hand); font-size: 34px; color: var(--air-red); margin: 22px 0 0; text-align: right; line-height: 1; }
+
+  .scrawl { font-family: var(--hand); font-size: 32px; line-height: 1.15; color: var(--air-blue); margin: 0 0 18px; }
+
+  /* ---------- sticker of the week ---------- */
+  .sticker-stage {
+    position: relative;
+    perspective: 900px;
+    display: flex;
+    justify-content: center;
+    padding: 34px 0 22px;
+  }
+  /* the tilting holder: carries the card and, until it's torn open, the pack */
+  .holo {
+    --rx: 0deg; --ry: 0deg;
+    --px: 50%; --py: 50%;     /* foil position */
+    --gx: 50%; --gy: 50%;     /* light position */
+    --glow: 0.35;             /* how strongly the light hits */
+    --sx: 0px; --sy: 12px;    /* shadow offset */
+    position: relative;
+    width: min(84%, 340px);
+    aspect-ratio: 750 / 1050;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+    will-change: transform;
+  }
+  .sticker {
+    position: absolute;
+    inset: 0;
+    border-radius: 4.8% / 3.43%;
+    overflow: hidden;
+    filter: drop-shadow(var(--sx) var(--sy) 14px rgba(20, 28, 50, .32));
+    cursor: pointer;
+  }
+  .sticker > * { position: absolute; inset: 0; pointer-events: none; }
+  .sticker .art { width: 100%; height: 100%; display: block; }
+  /* rainbow foil over the art window only, strongest where the light is */
+  .sticker .foil {
+    inset: auto;
+    left: 6.44%; top: 12.25%; width: 87.1%; height: 42.35%;
+    border-radius: 1.4%;
+    background:
+      radial-gradient(farthest-corner circle at var(--gx) var(--gy),
+        rgba(255,255,255,0) 0%, rgba(255,255,255,.5) 45%, #fff 90%),
+      repeating-linear-gradient(115deg,
+        hsl(355 95% 72%) 0%,
+        hsl(40 100% 68%) 6%,
+        hsl(95 80% 68%) 12%,
+        hsl(185 85% 66%) 18%,
+        hsl(230 90% 74%) 24%,
+        hsl(290 85% 74%) 30%,
+        hsl(355 95% 72%) 36%);
+    background-size: 100% 100%, 400% 400%;
+    background-position: center, var(--px) var(--py);
+    background-blend-mode: screen;
+    mix-blend-mode: multiply;
+    opacity: calc(.5 + var(--glow) * .5);
+  }
+  /* a fainter foil sheen across the whole card, so the frame shimmers too */
+  .sticker .sheen {
+    background: linear-gradient(115deg,
+      transparent 20%,
+      hsla(190 90% 75% / .55) 38%,
+      hsla(300 90% 80% / .55) 46%,
+      hsla(50 100% 75% / .5) 54%,
+      transparent 72%);
+    background-size: 250% 250%;
+    background-position: var(--px) var(--py);
+    mix-blend-mode: color-dodge;
+    opacity: calc(var(--glow) * .38);
+  }
+  /* fine diagonal etching that catches the light on dark areas */
+  .sticker .etch {
+    background:
+      repeating-linear-gradient(-45deg,
+        rgba(255,255,255,0) 0 3px,
+        rgba(255,255,255,.5) 3px 4px),
+      radial-gradient(circle at var(--gx) var(--gy),
+        rgba(160,220,255,.9), rgba(255,160,230,.5) 30%, transparent 60%);
+    background-blend-mode: overlay;
+    mix-blend-mode: color-dodge;
+    opacity: calc(var(--glow) * .28);
+  }
+  /* the glare itself */
+  .sticker .glare {
+    background: radial-gradient(farthest-corner circle at var(--gx) var(--gy),
+      rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 25%, rgba(0,0,0,.12) 90%);
+    mix-blend-mode: soft-light;
+    opacity: calc(.3 + var(--glow) * .5);
+  }
+  .sticker:focus-visible { outline: 2px solid var(--air-red); outline-offset: 6px; }
+
+  /* ---------- the sealed pack ---------- */
+  /* while sealed, the card sits lower down inside the pack; it rises out when opened */
+  .sticker {
+    z-index: 2;
+    transform-origin: 50% 0;
+    transition: transform .95s cubic-bezier(.2,.9,.25,1.12);
+  }
+  .holo.sealed .sticker { transform: translateY(9%) scale(.9); }
+
+  .pack, .pack-back {
+    --tooth: 6px;              /* depth of the tear-line zigzag */
+    position: absolute;
+    inset: -7% -4.5% -4% -4.5%;
+    container-type: inline-size;
+  }
+  .pack-back { z-index: 1; pointer-events: none; }
+  .pack {
+    z-index: 3;
+    color: #3a4a78;
+    pointer-events: none;
+    filter:
+      drop-shadow(var(--sx) calc(var(--sy) + 6px) 18px rgba(60, 60, 70, .3))
+      drop-shadow(0 1px 1px rgba(60, 60, 70, .28));
+  }
+  .pack > * { pointer-events: auto; }
+  .pack[hidden], .pack-back[hidden] { display: none; }
+
+  /* pack height in container units: holo is 750x1050, pack adds 11% height and 9% width */
+  .pack-flap, .pack-body, .lining { --pack-h: 142.57cqw; --flap: calc(var(--pack-h) * .12); }
+
+  /* ---- the tear-off strip, cut into slices so it can tear bit by bit ---- */
+  .pack-flap {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: var(--flap);
+    z-index: 2;
+    cursor: grab;
+    touch-action: none;
+  }
+  .pack-flap:active { cursor: grabbing; }
+  .pack-flap:focus-visible { outline: 2px dashed #fff; outline-offset: -10px; }
+  .slice {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    overflow: hidden;
+    /* crimped top edge + zigzag tear line underneath (positions set per slice in JS) */
+    -webkit-mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 0 0 / 9px 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / calc(var(--tooth) * 2) 51% repeat-x;
+            mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 0 0 / 9px 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / calc(var(--tooth) * 2) 51% repeat-x;
+  }
+  .slice .skin { right: auto; top: 0; height: var(--pack-h); }
+  /* the inside of the wrapper: silver foil, seen once a torn piece turns over */
+  .slice-back { position: absolute; inset: 0; z-index: 5; display: none; }
+  .slice .skin { z-index: 0; }
+  .slice.torn { filter: brightness(var(--lit, 1)); }
+  .slice .slice-back { inset: 0 auto; }
+  .slice.back .slice-back { display: block; }
+  .slice-back, .lining {
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 1px, rgba(0,0,0,.05) 1px 3px),
+      linear-gradient(100deg, #7b838e 0%, #e8ecf1 14%, #a1a9b3 30%, #fbfcfe 46%, #939ba6 62%, #dde2e8 80%, #818993 100%);
+    background-size: auto, 320% 100%;
+    background-position: 0 0, var(--px) 0;
+  }
+  .slice-back::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(40,46,60,.35));
+    mix-blend-mode: soft-light;
+  }
+
+  /* the silver lining of the pack's back wall, visible through the opening */
+  .lining {
+    position: absolute;
+    left: 2%; right: 2%;
+    top: calc(var(--flap) - var(--tooth) - 5.5cqw);
+    height: calc(5.5cqw + var(--tooth) * 3);
+    -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 3px 0 / 10px 60% repeat-x,
+                  linear-gradient(#000 0 0) 0 100% / 100% 50% no-repeat;
+            mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 3px 0 / 10px 60% repeat-x,
+                  linear-gradient(#000 0 0) 0 100% / 100% 50% no-repeat;
+  }
+  .lining::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(20,24,34,.55), transparent 12%, transparent 88%, rgba(20,24,34,.55)),
+      linear-gradient(180deg, rgba(255,255,255,.25), transparent 35%, rgba(20,24,34,.6));
+  }
+
+  /* ---- the front of the pack ---- */
+  .pack-body {
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(var(--flap) - var(--tooth));
+    bottom: 0;
+    overflow: hidden;
+    /* pinched-in sides near the seals, zigzag tear line on top, crimped bottom */
+    -webkit-mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Cpath%20d%3D%27M0%200H100C98.6%204%2098.9%2025%2099.3%2050%2098.9%2075%2098.6%2093%20100%2097V100H0V97C1.4%2093%201.1%2075%20.7%2050%201.1%2025%201.4%204%200%200Z%27/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) var(--tooth) 0 / calc(var(--tooth) * 2) 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / 9px 51% repeat-x;
+    -webkit-mask-composite: source-in, source-over;
+            mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Cpath%20d%3D%27M0%200H100C98.6%204%2098.9%2025%2099.3%2050%2098.9%2075%2098.6%2093%20100%2097V100H0V97C1.4%2093%201.1%2075%20.7%2050%201.1%2025%201.4%204%200%200Z%27/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) var(--tooth) 0 / calc(var(--tooth) * 2) 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 0 100% / 9px 51% repeat-x;
+            mask-composite: intersect, add;
+  }
+  .skin {
+    position: absolute;
+    left: 0; right: 0;
+    /* dawn over Fuji: sakura sky fading to misty indigo, printed with seigaiha waves */
+    background:
+      radial-gradient(62% 34% at 50% 54%, rgba(255,255,255,.9), rgba(255,255,255,0) 72%),
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2712%27%20viewBox%3D%270%200%2024%2012%27%3E%3Cg%20opacity%3D%27.13%27%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2712%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%278.6%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%275.2%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%271.9%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%270%27%20r%3D%2712%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%270%27%20r%3D%278.6%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%270%27%20r%3D%275.2%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%270%27%20r%3D%271.9%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%276%27%20r%3D%2712%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%276%27%20r%3D%278.6%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%276%27%20r%3D%275.2%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%276%27%20r%3D%271.9%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%2712%27%20r%3D%2712%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%2712%27%20r%3D%278.6%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%2712%27%20r%3D%275.2%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%270%27%20cy%3D%2712%27%20r%3D%271.9%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%2712%27%20r%3D%2712%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%2712%27%20r%3D%278.6%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%2712%27%20r%3D%275.2%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3Ccircle%20cx%3D%2724%27%20cy%3D%2712%27%20r%3D%271.9%27%20fill%3D%27%23fff%27%20stroke%3D%27%233a4a78%27%20stroke-width%3D%27.7%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 50% 0 / 8cqw 4cqw,
+      linear-gradient(180deg, #f7dfe7 0%, #fbefee 30%, #f8f1f2 58%, #e6e8f3 82%, #d9ddee 100%);
+  }
+  .pack-body .skin { top: calc(var(--tooth) - var(--flap)); height: var(--pack-h); }
+
+  /* the pillow shape: rounded shading across, pinched at the seals, wrinkles, and a moving highlight */
+  .puff {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 24% 40% at calc(22% + var(--gx) * .56) calc(30% + var(--gy) * .3), rgba(255,255,255,.7), transparent 70%),
+      linear-gradient(180deg, rgba(110,108,100,.24) 4.5%, rgba(110,108,100,0) 15%, rgba(110,108,100,0) 84%, rgba(110,108,100,.24) 96.4%),
+      linear-gradient(90deg,
+        rgba(110,108,100,.3) 0%, rgba(110,108,100,.08) 6%, rgba(255,255,255,.35) 19%,
+        rgba(255,255,255,0) 36%, rgba(110,108,100,0) 62%, rgba(110,108,100,.08) 87%, rgba(110,108,100,.32) 100%);
+  }
+
+  /* crimped seals at top and bottom */
+  .crimp {
+    position: absolute;
+    left: 0; right: 0;
+    z-index: 1;
+    background:
+      linear-gradient(90deg, rgba(30,36,64,.28), transparent 8%, transparent 92%, rgba(30,36,64,.28)),
+      linear-gradient(rgba(255,255,255,.18), rgba(30,36,64,.14)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 2px, rgba(30,36,64,.14) 2px 4px),
+      repeating-linear-gradient(-45deg,
+        #34436f 0 7px, #4a5b8c 7px 9px, #34436f 9px 16px, #e9a1b6 16px 18px);
+  }
+  .crimp.top { top: 0; height: 5.4%; box-shadow: 0 2px 3px rgba(30,36,64,.2); }
+  .crimp.bottom { bottom: 0; height: 3.6%; box-shadow: 0 -2px 3px rgba(30,36,64,.2); }
+
+  .flap-ui {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: var(--flap);
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 5% calc(var(--tooth) + 3px);
+    pointer-events: none;
+  }
+  .tear-line {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 2.4cqw;
+    font-family: var(--hand);
+    font-size: 5cqw;
+    line-height: 1;
+    color: #fff;
+    white-space: nowrap;
+    color: #3a4a78;
+  }
+  .tear-line svg { width: 5.4cqw; height: 5.4cqw; flex: none; }
+  .tear-line::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: radial-gradient(circle, rgba(58,74,120,.7) 1px, transparent 1.4px) 0 0 / 7px 2px repeat-x;
+  }
+  /* a shine that runs along the tear line, hinting at the swipe */
+  .flap-hint {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.75) 50%, transparent 65%) no-repeat;
+    background-size: 40% 100%;
+    background-position: -60% 0;
+    animation: swipe-hint 3.2s ease-in-out 1.2s infinite;
+    pointer-events: none;
+  }
+  .pack-flap.tearing .flap-hint { display: none; }
+  @keyframes swipe-hint {
+    0% { background-position: -60% 0; }
+    45%, 100% { background-position: 160% 0; }
+  }
+
+  /* a woodblock-print frame: indigo rule with a fine sakura line inside */
+  .pack-frame {
+    position: absolute;
+    left: 6%; right: 6%;
+    top: 16%; bottom: 7.5%;
+    border: .9cqw solid #3a4a78;
+    outline: .45cqw solid #e48aa3;
+    outline-offset: -2.1cqw;
+    border-radius: 1cqw;
+  }
+  .pack-brand {
+    position: absolute;
+    left: 0; right: 0; top: 19.5%;
+    text-align: center;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 7cqw;
+    letter-spacing: .02em;
+    line-height: 1;
+    color: #3a4a78;
+    text-shadow: 0 2px 0 rgba(255,255,255,.9);
+  }
+  .pack-sub {
+    position: absolute;
+    left: 0; right: 0; top: 27.6%;
+    text-align: center;
+    font-style: italic;
+    font-size: 4.1cqw;
+    line-height: 1;
+    color: #8a8578;
+  }
+
+  /* this edition's sticker, printed on the pack.
+     multiply drops the photo's white background so only the drawing shows */
+  .pack-art {
+    position: absolute;
+    left: 17%; width: 66%;
+    top: 33%;
+    aspect-ratio: 1;
+  }
+  /* a soft white patch so the wave print doesn't show through the white fur */
+  .pack-art::before {
+    content: "";
+    position: absolute;
+    inset: -4%;
+    background: radial-gradient(closest-side, #fff 78%, rgba(255,255,255,0));
+  }
+  .pack-art img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+
+  /* Fuji, a pagoda and mist along the bottom of the cover */
+  .pack-scene { position: absolute; left: 0; right: 0; bottom: 3.6%; height: 24%; display: block; }
+  /* a blossom branch reaching over the corner of the picture */
+  .pack-branch { position: absolute; right: 2%; top: 26%; width: 40%; z-index: 3; display: block; pointer-events: none; }
+  /* a red hanko seal */
+  .pack-seal {
+    position: absolute;
+    left: 72%; top: 80.5%;
+    width: 9cqw; height: 9cqw;
+    z-index: 3;
+    display: grid; place-items: center;
+    background: #c4314b;
+    color: #fff4f0;
+    border-radius: 1.4cqw;
+    font: 700 6cqw/1 var(--display);
+    transform: rotate(-6deg);
+    box-shadow: inset 0 0 0 .6cqw #c4314b, inset 0 0 0 .95cqw rgba(255,244,240,.85);
+    opacity: .92;
+  }
+  .pack-meta {
+    position: absolute;
+    left: 0; right: 0; top: 84%;
+    text-align: center;
+    font-size: 3.6cqw;
+    line-height: 1;
+    color: #8a8578;
+  }
+
+  /* little four-point glints that twinkle across the pack */
+  .glint { position: absolute; z-index: 3; width: 5cqw; height: 5cqw; color: #f2a7bc; }
+  .glint:nth-of-type(even) { color: #fbd3de; }
+  .glint svg { width: 100%; height: 100%; display: block; }
+  .glint:nth-of-type(1) { left: 10%; top: 38%; animation: twinkle 2.6s ease-in-out infinite; }
+  .glint:nth-of-type(2) { left: 85%; top: 35%; width: 3.6cqw; height: 3.6cqw; animation: twinkle 3.1s ease-in-out .7s infinite; }
+  .glint:nth-of-type(3) { left: 84%; top: 74%; animation: twinkle 2.9s ease-in-out 1.4s infinite; }
+  .glint:nth-of-type(4) { left: 11%; top: 77%; width: 3.2cqw; height: 3.2cqw; animation: twinkle 3.4s ease-in-out .3s infinite; }
+  @keyframes twinkle {
+    0%, 100% { opacity: .15; transform: scale(.6) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(45deg); }
+  }
+
+  /* foil and glare over the whole pack */
+  .p-foil, .p-etch, .p-glare { position: absolute; inset: 0; pointer-events: none; }
+  .p-glare { z-index: 2; }
+  .p-foil {
+    background: linear-gradient(115deg,
+      transparent 18%,
+      hsla(190 90% 70% / .7) 34%,
+      hsla(300 90% 75% / .7) 44%,
+      hsla(50 100% 70% / .65) 54%,
+      hsla(140 80% 70% / .55) 62%,
+      transparent 78%);
+    background-size: 260% 260%;
+    background-position: var(--px) var(--py);
+    mix-blend-mode: multiply;
+    opacity: calc(.04 + var(--glow) * .3);
+  }
+  .p-etch {
+    background:
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0) 0 3px, rgba(255,255,255,.9) 3px 4px),
+      radial-gradient(circle at var(--gx) var(--gy),
+        rgba(150,200,255,.8), rgba(255,160,210,.5) 28%, transparent 58%);
+    background-blend-mode: screen;
+    mix-blend-mode: multiply;
+    opacity: calc(var(--glow) * .22);
+  }
+  .p-glare {
+    background: radial-gradient(farthest-corner circle at var(--gx) var(--gy),
+      rgba(255,255,255,.7) 0%, rgba(255,255,255,.15) 28%, rgba(90,90,90,.14) 95%);
+    mix-blend-mode: soft-light;
+    opacity: calc(.4 + var(--glow) * .5);
+  }
+
+  /* hearts and glints that burst out when the pack opens */
+  .burst {
+    position: absolute;
+    left: 50%; top: 50%;
+    pointer-events: none;
+    font-size: 20px;
+    line-height: 1;
+    z-index: 3;
+  }
+  .sticker-note {
+    font-family: var(--hand);
+    font-size: 24px;
+    line-height: 1.15;
+    color: var(--pencil);
+    text-align: center;
+    margin: 14px 0 0;
+    min-height: 1.2em;
+  }
+  .tilt-btn {
+    display: block;
+    margin: 12px auto 0;
+    font: 600 15px/1 var(--serif);
+    color: var(--sheet);
+    background: var(--air-blue);
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 20px;
+    cursor: pointer;
+  }
+  .tilt-btn[hidden] { display: none; }
+  .collect {
+    font-family: var(--hand);
+    font-size: 28px;
+    line-height: 1.1;
+    color: var(--air-red);
+    margin: -6px 0 10px;
+    transform: rotate(-2deg);
+    transform-origin: left center;
+  }
+  .save-hint {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--pencil);
+    text-align: center;
+  }
+  .reseal {
+    display: block;
+    margin: 10px auto 0;
+    background: none;
+    border: 0;
+    padding: 6px 10px;
+    font: italic 13px/1 var(--serif);
+    color: var(--pencil);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .reseal[hidden] { display: none; }
+
+  /* save-the-sticker dialog */
+  .save-dialog {
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    background: var(--sheet);
+    color: var(--ink);
+    padding: 24px 22px 20px;
+    width: min(320px, calc(100% - 40px));
+    box-shadow: 0 20px 50px rgba(30,36,64,.25);
+    text-align: center;
+  }
+  .save-dialog::backdrop { background: rgba(30,36,64,.45); }
+  .save-dialog img { width: 150px; height: auto; display: block; margin: 0 auto 14px; filter: drop-shadow(0 6px 12px rgba(30,36,64,.25)); }
+  .save-dialog p { margin: 0 0 18px; font-size: 18px; line-height: 1.35; }
+  .save-actions { display: flex; flex-direction: column; gap: 10px; }
+  .save-actions a, .save-actions button {
+    font: 600 15px/1 var(--serif);
+    border-radius: 999px;
+    padding: 13px 18px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .save-actions a { background: var(--air-blue); color: var(--sheet); border: 0; }
+  .save-actions a.plain { background: none; color: var(--air-blue); border: 1px solid var(--air-blue); }
+  .save-actions button { background: none; color: var(--pencil); border: 1px solid var(--rule); }
+  .save-actions a:focus-visible, .save-actions button:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
+  .tilt-btn:focus-visible, .reseal:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flap-hint, .glint { animation: none !important; }
+    .glint { opacity: .7; }
+  }
+
+  footer { padding-bottom: 44px; text-align: center; font-family: var(--hand); font-size: 30px; line-height: 1.2; color: var(--air-blue); }
+  .sprig { display: block; width: 130px; height: 50px; margin: 8px auto 0; }
+
+  a:focus-visible { outline: 2px solid var(--air-red); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scene .stalk, .scene .mist-a, .scene .mist-b { animation: none; }
+  }
+  @media (min-width: 600px) {
+    .letter {
+      margin: 36px auto;
+      min-height: 0;
+      border-width: 12px;
+      box-shadow: 0 2px 4px rgba(30,36,64,.06), 0 24px 60px rgba(30,36,64,.16);
     }
-    .hint .tap { display: none; }
-    @media (hover: none) {
-      .hint .click { display: none; }
-      .hint .tap { display: inline; }
-    }
-    @keyframes nudge {
-      0%, 100% { transform: translateY(0); opacity: 0.7; }
-      50% { transform: translateY(-4px); opacity: 1; }
-    }
-  </style>
+    header, section, footer { padding-left: 40px; padding-right: 40px; }
+    header { padding-top: 44px; }
+    .vista { width: calc(100% + 80px); margin: 14px -40px 0; }
+    .franking { right: 32px; top: 30px; }
+  }
+</style>
 </head>
 <body>
-  <svg viewBox="0 0 400 400" role="img" aria-label="Cat in a construction hat holding an under maintenance sign. Tap to flip the sign.">
-    <defs>
-      <pattern id="hz" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <rect width="16" height="16" fill="#ffc93c"/>
-        <rect width="8" height="16" fill="#2b2b2b"/>
-      </pattern>
-      <clipPath id="photoClip">
-        <rect x="102" y="238" width="196" height="92" rx="6"/>
-      </clipPath>
-    </defs>
+<svg class="scene" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+ <defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="s-top"/><stop offset=".55" class="s-mid"/><stop offset="1" class="s-low"/></linearGradient>
+  <linearGradient id="fujiG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="f-top"/><stop offset="1" class="f-low"/></linearGradient>
+  <linearGradient id="bamG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" class="b-1"/><stop offset=".5" class="b-2"/><stop offset="1" class="b-3"/></linearGradient>
+  <radialGradient id="sunG"><stop offset="0" class="sun-in"/><stop offset="1" class="sun-out"/></radialGradient>
+  <filter id="soft" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="22"/></filter>
+  <linearGradient id="fog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="fog-0"/><stop offset="1" class="fog-1"/></linearGradient>
+ </defs>
+ <rect width="1600" height="1000" fill="url(#sky)"/>
+ <circle cx="1490" cy="330" r="190" fill="url(#sunG)"/>
+ <circle class="sun" cx="1490" cy="330" r="46"/>
+ <path class="far" d="M0 690C160 650 300 672 470 640S800 620 960 650 1300 600 1600 640V1000H0Z"/>
+ <path fill="url(#fujiG)" d="M860 780C1030 650 1170 480 1262 348Q1300 322 1338 348C1430 480 1570 650 1740 780Z"/>
+ <path class="fuji-sh" d="M1300 334Q1320 336 1338 348C1430 480 1570 650 1740 780H1420C1380 600 1330 450 1300 334Z"/>
+ <path class="snow" d="M1262 348Q1300 322 1338 348L1374 398L1354 390L1338 414L1318 394L1301 422L1283 396L1265 416L1250 392L1226 400Z"/>
+ <g class="mist mist-a" filter="url(#soft)"><ellipse cx="400" cy="640" rx="520" ry="40"/><ellipse cx="1150" cy="600" rx="560" ry="36"/><ellipse cx="1500" cy="660" rx="300" ry="34"/></g>
+ <path class="hill" d="M0 800C200 760 380 790 560 760S900 740 1080 770 1400 730 1600 760V1000H0Z"/>
+ <g class="hill-d" transform="translate(1500 738) scale(.8)">
+  <rect x="-3" y="-78" width="6" height="22"/>
+  <path d="M-40 -48H40L28 -58H-28Z"/><rect x="-22" y="-48" width="44" height="14"/>
+  <path d="M-46 -26H46L32 -38H-32Z"/><rect x="-24" y="-26" width="48" height="14"/>
+  <path d="M-52 -4H52L36 -16H-36Z"/><rect x="-26" y="-4" width="52" height="40"/>
+ </g>
+ <g class="mist mist-b" filter="url(#soft)"><ellipse cx="700" cy="820" rx="700" ry="46"/><ellipse cx="1450" cy="850" rx="420" ry="40"/></g>
+ <rect y="760" width="1600" height="240" fill="url(#fog)"/>
+ <g class="bamboo"><g class="stalk" style="animation-delay:-1.6s"><rect class="bam" x="40" y="-30" width="18" height="1070" rx="9.0"/><rect class="bam-n" x="38.5" y="50" width="21" height="3.2" rx="1.6"/><rect class="bam-n" x="38.5" y="170" width="21" height="3.2" rx="1.6"/><rect class="bam-n" x="38.5" y="269" width="21" height="3.2" rx="1.6"/><rect class="bam-n" x="38.5" y="370" width="21" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q22 -4 49 0Q22 4 0 0Z" transform="translate(40 372) rotate(165)"/><path class="bam-l" d="M0 0Q25 -5 55 0Q25 5 0 0Z" transform="translate(40 372) rotate(159)"/><path class="bam-l" d="M0 0Q22 -4 48 0Q22 4 0 0Z" transform="translate(40 372) rotate(154)"/><path class="bam-l" d="M0 0Q37 -7 82 0Q37 7 0 0Z" transform="translate(40 372) rotate(154)"/><rect class="bam-n" x="38.5" y="505" width="21" height="3.2" rx="1.6"/><rect class="bam-n" x="38.5" y="603" width="21" height="3.2" rx="1.6"/><rect class="bam-n" x="38.5" y="723" width="21" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q23 -5 51 0Q23 5 0 0Z" transform="translate(40 725) rotate(154)"/><path class="bam-l" d="M0 0Q30 -6 67 0Q30 6 0 0Z" transform="translate(40 725) rotate(159)"/><rect class="bam-n" x="38.5" y="854" width="21" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q32 -6 70 0Q32 6 0 0Z" transform="translate(40 856) rotate(153)"/><path class="bam-l" d="M0 0Q30 -6 67 0Q30 6 0 0Z" transform="translate(40 856) rotate(160)"/><rect class="bam-n" x="38.5" y="953" width="21" height="3.2" rx="1.6"/></g><g class="stalk" style="animation-delay:-0.5s"><rect class="bam-d" x="105" y="40" width="14" height="1000" rx="7.0"/><rect class="bam-n" x="103.5" y="143" width="17" height="3.2" rx="1.6"/><rect class="bam-n" x="103.5" y="258" width="17" height="3.2" rx="1.6"/><rect class="bam-n" x="103.5" y="382" width="17" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q25 -5 55 0Q25 5 0 0Z" transform="translate(105 384) rotate(150)"/><path class="bam-l" d="M0 0Q30 -6 66 0Q30 6 0 0Z" transform="translate(105 384) rotate(154)"/><rect class="bam-n" x="103.5" y="498" width="17" height="3.2" rx="1.6"/><rect class="bam-n" x="103.5" y="611" width="17" height="3.2" rx="1.6"/><rect class="bam-n" x="103.5" y="710" width="17" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q23 -5 52 0Q23 5 0 0Z" transform="translate(119 712) rotate(32)"/><path class="bam-l" d="M0 0Q21 -4 47 0Q21 4 0 0Z" transform="translate(119 712) rotate(24)"/><rect class="bam-n" x="103.5" y="847" width="17" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q31 -6 69 0Q31 6 0 0Z" transform="translate(119 849) rotate(30)"/><path class="bam-l" d="M0 0Q29 -6 63 0Q29 6 0 0Z" transform="translate(119 849) rotate(27)"/><path class="bam-l" d="M0 0Q37 -7 82 0Q37 7 0 0Z" transform="translate(119 849) rotate(35)"/><rect class="bam-n" x="103.5" y="972" width="17" height="3.2" rx="1.6"/></g><g class="stalk" style="animation-delay:-1.3s"><rect class="bam" x="150" y="-60" width="22" height="1100" rx="11.0"/><rect class="bam-n" x="148.5" y="44" width="25" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q36 -7 80 0Q36 7 0 0Z" transform="translate(172 46) rotate(31)"/><path class="bam-l" d="M0 0Q37 -7 82 0Q37 7 0 0Z" transform="translate(172 46) rotate(19)"/><path class="bam-l" d="M0 0Q31 -6 69 0Q31 6 0 0Z" transform="translate(172 46) rotate(19)"/><rect class="bam-n" x="148.5" y="170" width="25" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q28 -6 61 0Q28 6 0 0Z" transform="translate(172 172) rotate(32)"/><path class="bam-l" d="M0 0Q29 -6 65 0Q29 6 0 0Z" transform="translate(172 172) rotate(37)"/><rect class="bam-n" x="148.5" y="275" width="25" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q35 -7 79 0Q35 7 0 0Z" transform="translate(172 277) rotate(34)"/><path class="bam-l" d="M0 0Q28 -6 62 0Q28 6 0 0Z" transform="translate(172 277) rotate(17)"/><rect class="bam-n" x="148.5" y="392" width="25" height="3.2" rx="1.6"/><rect class="bam-n" x="148.5" y="511" width="25" height="3.2" rx="1.6"/><rect class="bam-n" x="148.5" y="615" width="25" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q21 -4 46 0Q21 4 0 0Z" transform="translate(150 617) rotate(151)"/><path class="bam-l" d="M0 0Q24 -5 53 0Q24 5 0 0Z" transform="translate(150 617) rotate(145)"/><rect class="bam-n" x="148.5" y="728" width="25" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q30 -6 68 0Q30 6 0 0Z" transform="translate(172 730) rotate(20)"/><path class="bam-l" d="M0 0Q33 -7 72 0Q33 7 0 0Z" transform="translate(172 730) rotate(38)"/><path class="bam-l" d="M0 0Q31 -6 69 0Q31 6 0 0Z" transform="translate(172 730) rotate(24)"/><path class="bam-l" d="M0 0Q22 -4 48 0Q22 4 0 0Z" transform="translate(172 730) rotate(30)"/><rect class="bam-n" x="148.5" y="866" width="25" height="3.2" rx="1.6"/><rect class="bam-n" x="148.5" y="986" width="25" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q28 -6 61 0Q28 6 0 0Z" transform="translate(172 988) rotate(23)"/><path class="bam-l" d="M0 0Q38 -8 83 0Q38 8 0 0Z" transform="translate(172 988) rotate(14)"/></g><g class="stalk" style="animation-delay:-6.5s"><rect class="bam" x="232" y="10" width="16" height="1030" rx="8.0"/><rect class="bam-n" x="230.5" y="91" width="19" height="3.2" rx="1.6"/><rect class="bam-n" x="230.5" y="192" width="19" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q27 -5 60 0Q27 5 0 0Z" transform="translate(232 194) rotate(169)"/><path class="bam-l" d="M0 0Q36 -7 79 0Q36 7 0 0Z" transform="translate(232 194) rotate(171)"/><path class="bam-l" d="M0 0Q23 -5 52 0Q23 5 0 0Z" transform="translate(232 194) rotate(152)"/><path class="bam-l" d="M0 0Q27 -5 59 0Q27 5 0 0Z" transform="translate(232 194) rotate(164)"/><rect class="bam-n" x="230.5" y="310" width="19" height="3.2" rx="1.6"/><rect class="bam-n" x="230.5" y="412" width="19" height="3.2" rx="1.6"/><rect class="bam-n" x="230.5" y="536" width="19" height="3.2" rx="1.6"/><rect class="bam-n" x="230.5" y="650" width="19" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q25 -5 56 0Q25 5 0 0Z" transform="translate(232 652) rotate(161)"/><path class="bam-l" d="M0 0Q23 -5 52 0Q23 5 0 0Z" transform="translate(232 652) rotate(145)"/><path class="bam-l" d="M0 0Q37 -7 82 0Q37 7 0 0Z" transform="translate(232 652) rotate(171)"/><path class="bam-l" d="M0 0Q23 -5 52 0Q23 5 0 0Z" transform="translate(232 652) rotate(155)"/><rect class="bam-n" x="230.5" y="779" width="19" height="3.2" rx="1.6"/><rect class="bam-n" x="230.5" y="907" width="19" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q30 -6 66 0Q30 6 0 0Z" transform="translate(232 909) rotate(145)"/><path class="bam-l" d="M0 0Q27 -5 60 0Q27 5 0 0Z" transform="translate(232 909) rotate(143)"/><path class="bam-l" d="M0 0Q30 -6 67 0Q30 6 0 0Z" transform="translate(232 909) rotate(165)"/><path class="bam-l" d="M0 0Q32 -6 70 0Q32 6 0 0Z" transform="translate(232 909) rotate(156)"/></g><g class="stalk" style="animation-delay:-7.3s"><rect class="bam" x="290" y="-20" width="20" height="1060" rx="10.0"/><rect class="bam-n" x="288.5" y="88" width="23" height="3.2" rx="1.6"/><rect class="bam-n" x="288.5" y="198" width="23" height="3.2" rx="1.6"/><rect class="bam-n" x="288.5" y="307" width="23" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q38 -8 84 0Q38 8 0 0Z" transform="translate(310 309) rotate(31)"/><path class="bam-l" d="M0 0Q29 -6 64 0Q29 6 0 0Z" transform="translate(310 309) rotate(33)"/><path class="bam-l" d="M0 0Q31 -6 69 0Q31 6 0 0Z" transform="translate(310 309) rotate(14)"/><rect class="bam-n" x="288.5" y="424" width="23" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q22 -4 50 0Q22 4 0 0Z" transform="translate(310 426) rotate(11)"/><path class="bam-l" d="M0 0Q26 -5 59 0Q26 5 0 0Z" transform="translate(310 426) rotate(23)"/><path class="bam-l" d="M0 0Q38 -8 83 0Q38 8 0 0Z" transform="translate(310 426) rotate(23)"/><rect class="bam-n" x="288.5" y="558" width="23" height="3.2" rx="1.6"/><rect class="bam-n" x="288.5" y="683" width="23" height="3.2" rx="1.6"/><rect class="bam-n" x="288.5" y="800" width="23" height="3.2" rx="1.6"/><rect class="bam-n" x="288.5" y="900" width="23" height="3.2" rx="1.6"/></g><g class="stalk" style="animation-delay:-3.4s"><rect class="bam-d" x="352" y="90" width="13" height="950" rx="6.5"/><rect class="bam-n" x="350.5" y="200" width="16" height="3.2" rx="1.6"/><rect class="bam-n" x="350.5" y="307" width="16" height="3.2" rx="1.6"/><rect class="bam-n" x="350.5" y="413" width="16" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q37 -7 83 0Q37 7 0 0Z" transform="translate(365 415) rotate(34)"/><path class="bam-l" d="M0 0Q28 -6 61 0Q28 6 0 0Z" transform="translate(365 415) rotate(21)"/><rect class="bam-n" x="350.5" y="513" width="16" height="3.2" rx="1.6"/><rect class="bam-n" x="350.5" y="618" width="16" height="3.2" rx="1.6"/><rect class="bam-n" x="350.5" y="714" width="16" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q35 -7 77 0Q35 7 0 0Z" transform="translate(365 716) rotate(13)"/><path class="bam-l" d="M0 0Q32 -6 71 0Q32 6 0 0Z" transform="translate(365 716) rotate(39)"/><path class="bam-l" d="M0 0Q30 -6 67 0Q30 6 0 0Z" transform="translate(365 716) rotate(19)"/><path class="bam-l" d="M0 0Q21 -4 47 0Q21 4 0 0Z" transform="translate(365 716) rotate(12)"/><rect class="bam-n" x="350.5" y="850" width="16" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q24 -5 53 0Q24 5 0 0Z" transform="translate(352 852) rotate(140)"/><path class="bam-l" d="M0 0Q21 -4 47 0Q21 4 0 0Z" transform="translate(352 852) rotate(144)"/><path class="bam-l" d="M0 0Q29 -6 65 0Q29 6 0 0Z" transform="translate(352 852) rotate(165)"/><rect class="bam-n" x="350.5" y="982" width="16" height="3.2" rx="1.6"/><path class="bam-l" d="M0 0Q33 -7 74 0Q33 7 0 0Z" transform="translate(365 984) rotate(10)"/><path class="bam-l" d="M0 0Q32 -6 71 0Q32 6 0 0Z" transform="translate(365 984) rotate(37)"/></g></g>
+ <g class="blossom"><path class="branch" d="M1640 -20C1540 60 1460 70 1380 110S1240 150 1150 210" stroke-width="13"/><path class="branch" d="M1480 70C1450 130 1420 160 1390 200" stroke-width="7"/><path class="branch" d="M1300 130C1290 170 1260 200 1230 230" stroke-width="6"/><path class="branch" d="M1560 30C1580 80 1590 110 1600 160" stroke-width="7"/><path class="branch" d="M1250 170C1210 160 1180 150 1140 160" stroke-width="5"/><g class="bl" transform="translate(1587 1)"><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(63)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(135)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(207)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(279)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(351)"/><circle class="bl-c" r="2.2"/></g><g class="bl2" transform="translate(1604 19)"><ellipse cx="0" cy="-5.4" rx="4.2" ry="5.7" transform="rotate(10)"/><ellipse cx="0" cy="-5.4" rx="4.2" ry="5.7" transform="rotate(82)"/><ellipse cx="0" cy="-5.4" rx="4.2" ry="5.7" transform="rotate(154)"/><ellipse cx="0" cy="-5.4" rx="4.2" ry="5.7" transform="rotate(226)"/><ellipse cx="0" cy="-5.4" rx="4.2" ry="5.7" transform="rotate(298)"/><circle class="bl-c" r="1.8"/></g><g class="bl2" transform="translate(1608 13)"><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.4" transform="rotate(37)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.4" transform="rotate(109)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.4" transform="rotate(181)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.4" transform="rotate(253)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.4" transform="rotate(325)"/><circle class="bl-c" r="2.0"/></g><g class="bl" transform="translate(1570 29)"><ellipse cx="0" cy="-6.8" rx="5.2" ry="7.2" transform="rotate(18)"/><ellipse cx="0" cy="-6.8" rx="5.2" ry="7.2" transform="rotate(90)"/><ellipse cx="0" cy="-6.8" rx="5.2" ry="7.2" transform="rotate(162)"/><ellipse cx="0" cy="-6.8" rx="5.2" ry="7.2" transform="rotate(234)"/><ellipse cx="0" cy="-6.8" rx="5.2" ry="7.2" transform="rotate(306)"/><circle class="bl-c" r="2.2"/></g><g class="bl" transform="translate(1544 29)"><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.8" transform="rotate(2)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.8" transform="rotate(74)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.8" transform="rotate(146)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.8" transform="rotate(218)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.8" transform="rotate(290)"/><circle class="bl-c" r="2.1"/></g><g class="bl" transform="translate(1514 70)"><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(14)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(86)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(158)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(230)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(302)"/><circle class="bl-c" r="2.3"/></g><g class="bl2" transform="translate(1518 57)"><ellipse cx="0" cy="-6.5" rx="5.0" ry="6.9" transform="rotate(68)"/><ellipse cx="0" cy="-6.5" rx="5.0" ry="6.9" transform="rotate(140)"/><ellipse cx="0" cy="-6.5" rx="5.0" ry="6.9" transform="rotate(212)"/><ellipse cx="0" cy="-6.5" rx="5.0" ry="6.9" transform="rotate(284)"/><ellipse cx="0" cy="-6.5" rx="5.0" ry="6.9" transform="rotate(356)"/><circle class="bl-c" r="2.1"/></g><g class="bl" transform="translate(1484 94)"><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(40)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(112)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(184)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(256)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(328)"/><circle class="bl-c" r="1.9"/></g><g class="bl" transform="translate(1482 70)"><ellipse cx="0" cy="-5.4" rx="4.1" ry="5.6" transform="rotate(32)"/><ellipse cx="0" cy="-5.4" rx="4.1" ry="5.6" transform="rotate(104)"/><ellipse cx="0" cy="-5.4" rx="4.1" ry="5.6" transform="rotate(176)"/><ellipse cx="0" cy="-5.4" rx="4.1" ry="5.6" transform="rotate(248)"/><ellipse cx="0" cy="-5.4" rx="4.1" ry="5.6" transform="rotate(320)"/><circle class="bl-c" r="1.8"/></g><g class="bl" transform="translate(1476 79)"><ellipse cx="0" cy="-5.7" rx="4.3" ry="6.0" transform="rotate(22)"/><ellipse cx="0" cy="-5.7" rx="4.3" ry="6.0" transform="rotate(94)"/><ellipse cx="0" cy="-5.7" rx="4.3" ry="6.0" transform="rotate(166)"/><ellipse cx="0" cy="-5.7" rx="4.3" ry="6.0" transform="rotate(238)"/><ellipse cx="0" cy="-5.7" rx="4.3" ry="6.0" transform="rotate(310)"/><circle class="bl-c" r="1.8"/></g><g class="bl" transform="translate(1446 100)"><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.5" transform="rotate(18)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.5" transform="rotate(90)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.5" transform="rotate(162)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.5" transform="rotate(234)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.5" transform="rotate(306)"/><circle class="bl-c" r="2.0"/></g><g class="bl2" transform="translate(1390 123)"><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(35)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(107)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(179)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(251)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(323)"/><circle class="bl-c" r="2.1"/></g><g class="bl" transform="translate(1412 99)"><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.7" transform="rotate(37)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.7" transform="rotate(109)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.7" transform="rotate(181)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.7" transform="rotate(253)"/><ellipse cx="0" cy="-6.4" rx="4.9" ry="6.7" transform="rotate(325)"/><circle class="bl-c" r="2.1"/></g><g class="bl2" transform="translate(1349 114)"><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(1)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(73)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(145)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(217)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(289)"/><circle class="bl-c" r="2.4"/></g><g class="bl" transform="translate(1359 125)"><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(37)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(109)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(181)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(253)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(325)"/><circle class="bl-c" r="2.0"/></g><g class="bl" transform="translate(1337 119)"><ellipse cx="0" cy="-8.0" rx="6.1" ry="8.4" transform="rotate(16)"/><ellipse cx="0" cy="-8.0" rx="6.1" ry="8.4" transform="rotate(88)"/><ellipse cx="0" cy="-8.0" rx="6.1" ry="8.4" transform="rotate(160)"/><ellipse cx="0" cy="-8.0" rx="6.1" ry="8.4" transform="rotate(232)"/><ellipse cx="0" cy="-8.0" rx="6.1" ry="8.4" transform="rotate(304)"/><circle class="bl-c" r="2.6"/></g><g class="bl" transform="translate(1305 124)"><ellipse cx="0" cy="-7.9" rx="6.1" ry="8.4" transform="rotate(13)"/><ellipse cx="0" cy="-7.9" rx="6.1" ry="8.4" transform="rotate(85)"/><ellipse cx="0" cy="-7.9" rx="6.1" ry="8.4" transform="rotate(157)"/><ellipse cx="0" cy="-7.9" rx="6.1" ry="8.4" transform="rotate(229)"/><ellipse cx="0" cy="-7.9" rx="6.1" ry="8.4" transform="rotate(301)"/><circle class="bl-c" r="2.6"/></g><g class="bl" transform="translate(1332 141)"><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(68)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(140)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(212)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(284)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(356)"/><circle class="bl-c" r="2.4"/></g><g class="bl" transform="translate(1281 146)"><ellipse cx="0" cy="-6.6" rx="5.0" ry="6.9" transform="rotate(24)"/><ellipse cx="0" cy="-6.6" rx="5.0" ry="6.9" transform="rotate(96)"/><ellipse cx="0" cy="-6.6" rx="5.0" ry="6.9" transform="rotate(168)"/><ellipse cx="0" cy="-6.6" rx="5.0" ry="6.9" transform="rotate(240)"/><ellipse cx="0" cy="-6.6" rx="5.0" ry="6.9" transform="rotate(312)"/><circle class="bl-c" r="2.2"/></g><g class="bl" transform="translate(1251 162)"><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(19)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(91)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(163)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(235)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(307)"/><circle class="bl-c" r="2.6"/></g><g class="bl" transform="translate(1185 184)"><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(16)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(88)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(160)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(232)"/><ellipse cx="0" cy="-7.0" rx="5.3" ry="7.3" transform="rotate(304)"/><circle class="bl-c" r="2.3"/></g><g class="bl" transform="translate(1213 190)"><ellipse cx="0" cy="-6.1" rx="4.6" ry="6.4" transform="rotate(40)"/><ellipse cx="0" cy="-6.1" rx="4.6" ry="6.4" transform="rotate(112)"/><ellipse cx="0" cy="-6.1" rx="4.6" ry="6.4" transform="rotate(184)"/><ellipse cx="0" cy="-6.1" rx="4.6" ry="6.4" transform="rotate(256)"/><ellipse cx="0" cy="-6.1" rx="4.6" ry="6.4" transform="rotate(328)"/><circle class="bl-c" r="2.0"/></g><g class="bl" transform="translate(1204 177)"><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(68)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(140)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(212)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(284)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(356)"/><circle class="bl-c" r="2.4"/></g><g class="bl" transform="translate(1144 197)"><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.3" transform="rotate(22)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.3" transform="rotate(94)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.3" transform="rotate(166)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.3" transform="rotate(238)"/><ellipse cx="0" cy="-6.0" rx="4.6" ry="6.3" transform="rotate(310)"/><circle class="bl-c" r="2.0"/></g><g class="bl" transform="translate(1152 206)"><ellipse cx="0" cy="-5.5" rx="4.2" ry="5.8" transform="rotate(25)"/><ellipse cx="0" cy="-5.5" rx="4.2" ry="5.8" transform="rotate(97)"/><ellipse cx="0" cy="-5.5" rx="4.2" ry="5.8" transform="rotate(169)"/><ellipse cx="0" cy="-5.5" rx="4.2" ry="5.8" transform="rotate(241)"/><ellipse cx="0" cy="-5.5" rx="4.2" ry="5.8" transform="rotate(313)"/><circle class="bl-c" r="1.8"/></g><g class="bl2" transform="translate(1433 127)"><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(70)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(142)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(214)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(286)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(358)"/><circle class="bl-c" r="2.2"/></g><g class="bl" transform="translate(1449 154)"><ellipse cx="0" cy="-5.3" rx="4.0" ry="5.6" transform="rotate(59)"/><ellipse cx="0" cy="-5.3" rx="4.0" ry="5.6" transform="rotate(131)"/><ellipse cx="0" cy="-5.3" rx="4.0" ry="5.6" transform="rotate(203)"/><ellipse cx="0" cy="-5.3" rx="4.0" ry="5.6" transform="rotate(275)"/><ellipse cx="0" cy="-5.3" rx="4.0" ry="5.6" transform="rotate(347)"/><circle class="bl-c" r="1.7"/></g><g class="bl2" transform="translate(1420 181)"><ellipse cx="0" cy="-6.2" rx="4.8" ry="6.6" transform="rotate(36)"/><ellipse cx="0" cy="-6.2" rx="4.8" ry="6.6" transform="rotate(108)"/><ellipse cx="0" cy="-6.2" rx="4.8" ry="6.6" transform="rotate(180)"/><ellipse cx="0" cy="-6.2" rx="4.8" ry="6.6" transform="rotate(252)"/><ellipse cx="0" cy="-6.2" rx="4.8" ry="6.6" transform="rotate(324)"/><circle class="bl-c" r="2.0"/></g><g class="bl2" transform="translate(1410 163)"><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(63)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(135)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(207)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(279)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(351)"/><circle class="bl-c" r="1.8"/></g><g class="bl" transform="translate(1425 168)"><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.4" transform="rotate(4)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.4" transform="rotate(76)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.4" transform="rotate(148)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.4" transform="rotate(220)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.4" transform="rotate(292)"/><circle class="bl-c" r="2.0"/></g><g class="bl" transform="translate(1380 206)"><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(12)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(84)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(156)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(228)"/><ellipse cx="0" cy="-5.8" rx="4.4" ry="6.1" transform="rotate(300)"/><circle class="bl-c" r="1.9"/></g><g class="bl" transform="translate(1302 187)"><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(20)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(92)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(164)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(236)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(308)"/><circle class="bl-c" r="2.3"/></g><g class="bl" transform="translate(1297 162)"><ellipse cx="0" cy="-5.6" rx="4.2" ry="5.9" transform="rotate(19)"/><ellipse cx="0" cy="-5.6" rx="4.2" ry="5.9" transform="rotate(91)"/><ellipse cx="0" cy="-5.6" rx="4.2" ry="5.9" transform="rotate(163)"/><ellipse cx="0" cy="-5.6" rx="4.2" ry="5.9" transform="rotate(235)"/><ellipse cx="0" cy="-5.6" rx="4.2" ry="5.9" transform="rotate(307)"/><circle class="bl-c" r="1.8"/></g><g class="bl" transform="translate(1281 190)"><ellipse cx="0" cy="-8.2" rx="6.2" ry="8.6" transform="rotate(39)"/><ellipse cx="0" cy="-8.2" rx="6.2" ry="8.6" transform="rotate(111)"/><ellipse cx="0" cy="-8.2" rx="6.2" ry="8.6" transform="rotate(183)"/><ellipse cx="0" cy="-8.2" rx="6.2" ry="8.6" transform="rotate(255)"/><ellipse cx="0" cy="-8.2" rx="6.2" ry="8.6" transform="rotate(327)"/><circle class="bl-c" r="2.7"/></g><g class="bl" transform="translate(1279 200)"><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.5" transform="rotate(0)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.5" transform="rotate(72)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.5" transform="rotate(144)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.5" transform="rotate(216)"/><ellipse cx="0" cy="-6.1" rx="4.7" ry="6.5" transform="rotate(288)"/><circle class="bl-c" r="2.0"/></g><g class="bl" transform="translate(1234 229)"><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(36)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(108)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(180)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(252)"/><ellipse cx="0" cy="-5.6" rx="4.3" ry="5.9" transform="rotate(324)"/><circle class="bl-c" r="1.8"/></g><g class="bl" transform="translate(1577 79)"><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(3)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(75)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(147)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(219)"/><ellipse cx="0" cy="-6.3" rx="4.8" ry="6.6" transform="rotate(291)"/><circle class="bl-c" r="2.1"/></g><g class="bl" transform="translate(1591 133)"><ellipse cx="0" cy="-6.9" rx="5.3" ry="7.3" transform="rotate(38)"/><ellipse cx="0" cy="-6.9" rx="5.3" ry="7.3" transform="rotate(110)"/><ellipse cx="0" cy="-6.9" rx="5.3" ry="7.3" transform="rotate(182)"/><ellipse cx="0" cy="-6.9" rx="5.3" ry="7.3" transform="rotate(254)"/><ellipse cx="0" cy="-6.9" rx="5.3" ry="7.3" transform="rotate(326)"/><circle class="bl-c" r="2.3"/></g><g class="bl" transform="translate(1604 147)"><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(28)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(100)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(172)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(244)"/><ellipse cx="0" cy="-7.9" rx="6.0" ry="8.3" transform="rotate(316)"/><circle class="bl-c" r="2.6"/></g><g class="bl" transform="translate(1197 142)"><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(46)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(118)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(190)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(262)"/><ellipse cx="0" cy="-7.3" rx="5.6" ry="7.7" transform="rotate(334)"/><circle class="bl-c" r="2.4"/></g><g class="bl2" transform="translate(1192 159)"><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(31)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(103)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(175)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(247)"/><ellipse cx="0" cy="-6.6" rx="5.1" ry="7.0" transform="rotate(319)"/><circle class="bl-c" r="2.2"/></g><g class="bl" transform="translate(1191 142)"><ellipse cx="0" cy="-6.7" rx="5.1" ry="7.0" transform="rotate(36)"/><ellipse cx="0" cy="-6.7" rx="5.1" ry="7.0" transform="rotate(108)"/><ellipse cx="0" cy="-6.7" rx="5.1" ry="7.0" transform="rotate(180)"/><ellipse cx="0" cy="-6.7" rx="5.1" ry="7.0" transform="rotate(252)"/><ellipse cx="0" cy="-6.7" rx="5.1" ry="7.0" transform="rotate(324)"/><circle class="bl-c" r="2.2"/></g><g class="bl" transform="translate(1148 173)"><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(50)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(122)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(194)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(266)"/><ellipse cx="0" cy="-7.2" rx="5.5" ry="7.6" transform="rotate(338)"/><circle class="bl-c" r="2.4"/></g><g class="bl" transform="translate(1130 147)"><ellipse cx="0" cy="-7.1" rx="5.4" ry="7.4" transform="rotate(69)"/><ellipse cx="0" cy="-7.1" rx="5.4" ry="7.4" transform="rotate(141)"/><ellipse cx="0" cy="-7.1" rx="5.4" ry="7.4" transform="rotate(213)"/><ellipse cx="0" cy="-7.1" rx="5.4" ry="7.4" transform="rotate(285)"/><ellipse cx="0" cy="-7.1" rx="5.4" ry="7.4" transform="rotate(357)"/><circle class="bl-c" r="2.3"/></g><g class="bl2" transform="translate(1157 163)"><ellipse cx="0" cy="-7.0" rx="5.4" ry="7.4" transform="rotate(45)"/><ellipse cx="0" cy="-7.0" rx="5.4" ry="7.4" transform="rotate(117)"/><ellipse cx="0" cy="-7.0" rx="5.4" ry="7.4" transform="rotate(189)"/><ellipse cx="0" cy="-7.0" rx="5.4" ry="7.4" transform="rotate(261)"/><ellipse cx="0" cy="-7.0" rx="5.4" ry="7.4" transform="rotate(333)"/><circle class="bl-c" r="2.3"/></g><g class="bl2" transform="translate(1510 11)"><ellipse cx="0" cy="-7.6" rx="5.8" ry="8.0" transform="rotate(54)"/><ellipse cx="0" cy="-7.6" rx="5.8" ry="8.0" transform="rotate(126)"/><ellipse cx="0" cy="-7.6" rx="5.8" ry="8.0" transform="rotate(198)"/><ellipse cx="0" cy="-7.6" rx="5.8" ry="8.0" transform="rotate(270)"/><ellipse cx="0" cy="-7.6" rx="5.8" ry="8.0" transform="rotate(342)"/><circle class="bl-c" r="2.5"/></g><g class="bl" transform="translate(1325 147)"><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.8" transform="rotate(34)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.8" transform="rotate(106)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.8" transform="rotate(178)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.8" transform="rotate(250)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.8" transform="rotate(322)"/><circle class="bl-c" r="2.4"/></g><g class="bl2" transform="translate(1352 138)"><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.9" transform="rotate(17)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.9" transform="rotate(89)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.9" transform="rotate(161)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.9" transform="rotate(233)"/><ellipse cx="0" cy="-7.4" rx="5.7" ry="7.9" transform="rotate(305)"/><circle class="bl-c" r="2.4"/></g><g class="bl2" transform="translate(1357 146)"><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(34)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(106)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(178)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(250)"/><ellipse cx="0" cy="-6.2" rx="4.7" ry="6.6" transform="rotate(322)"/><circle class="bl-c" r="2.0"/></g></g>
+</svg>
+<canvas class="petals" id="petals" aria-hidden="true"></canvas>
+<div class="letter">
 
-    <ellipse cx="200" cy="378" rx="125" ry="10" fill="#000" opacity="0.08"/>
+  <header>
+    <div class="franking" aria-hidden="true">
+      <div class="stamp"><div class="stamp-face">
+        <svg viewBox="0 0 64 80" preserveAspectRatio="none">
+          <circle cx="44" cy="20" r="9" fill="#e9798f" opacity=".85"/>
+          <path d="M-2 52 22 30Q32 23 42 30L66 52Z" fill="#3a4a78"/>
+          <path d="M22 30Q32 23 42 30L47 35 42 33 38 37 33 33 29 37 25 33 18 34Z" fill="#fff"/>
+          <path d="M-2 50Q20 46 34 50T66 49V56H-2Z" fill="#fbeee9" opacity=".9"/>
+        </svg>
+        <span>航空便</span>
+      </div></div>
+      <svg class="cancel" viewBox="0 0 128 70" fill="none" stroke="currentColor">
+        <circle cx="40" cy="35" r="27" stroke-width="2"/>
+        <circle cx="40" cy="35" r="21" stroke-width="1"/>
+        <text x="40" y="31" text-anchor="middle" font-size="7.5" fill="currentColor" stroke="none" font-family="Georgia, serif">21 OCT</text>
+        <text x="40" y="42" text-anchor="middle" font-size="9.5" fill="currentColor" stroke="none" font-family="Georgia, serif" font-weight="700">2026</text>
+        <path d="M70 22c6-4 12 4 18 0s12 4 18 0 12 4 18 0M70 32c6-4 12 4 18 0s12 4 18 0 12 4 18 0M70 42c6-4 12 4 18 0s12 4 18 0 12 4 18 0M70 52c6-4 12 4 18 0s12 4 18 0 12 4 18 0" stroke-width="1.8"/>
+      </svg>
+    </div>
+    <p class="kicker">21 October 2026 edition</p>
+    <h1>Kunjum-Kunjum Post</h1>
+    <p class="dateline">A newsletter with a readership of one</p>
+    <svg class="vista" viewBox="0 0 520 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <defs><linearGradient id="vm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="v-mist" stop-opacity="0"/><stop offset=".85" class="v-mist" stop-opacity="1"/></linearGradient></defs>
+      <circle class="v-sun" cx="300" cy="44" r="18"/>
+      <path class="v-hill" d="M0 96C80 84 140 92 220 86S380 80 520 90V120H0Z"/>
+      <path class="v-fuji" d="M250 118C300 86 340 52 370 26Q380 19 390 26C420 52 460 86 510 118Z"/>
+      <path class="v-snow" d="M370 26Q380 19 390 26L400 40 394 38 389 44 383 39 379 46 374 40 369 45 365 39 359 41Z"/>
+      <rect y="60" width="520" height="60" fill="url(#vm)"/>
+    </svg>
+  </header>
 
-    <g id="cat" role="button" tabindex="0" aria-label="Flip the sign">
-      <!-- Body, tail, feet -->
-      <path d="M270 320 Q345 315 332 245" fill="none" stroke="#f4a259" stroke-width="20" stroke-linecap="round"/>
-      <ellipse cx="200" cy="300" rx="88" ry="72" fill="#f4a259"/>
-      <ellipse cx="160" cy="366" rx="26" ry="12" fill="#f4a259"/>
-      <ellipse cx="240" cy="366" rx="26" ry="12" fill="#f4a259"/>
+  <section class="poem" aria-labelledby="poem-title">
+    <h2 id="poem-title">Ode to a Fox Who Is Definitely Not Jealous</h2>
 
-      <!-- Ears -->
-      <path d="M140 132 L126 72 L178 100 Z" fill="#f4a259"/>
-      <path d="M260 132 L274 72 L222 100 Z" fill="#f4a259"/>
-      <path d="M144 122 L135 86 L166 104 Z" fill="#ffb3c1"/>
-      <path d="M256 122 L265 86 L234 104 Z" fill="#ffb3c1"/>
+    <div class="ruled">
+    <p>Word came in from Hyderabad,<br>
+    Of ma’am and “Bang” and fun they had.<br>
+    The fox looked up, the fox said, “Cool.”<br>
+    Then stared at nothing, like a fool.</p>
 
-      <!-- Head -->
-      <circle cx="200" cy="155" r="72" fill="#f4a259"/>
-      <path d="M175 95 Q180 110 172 120 M200 92 L200 115 M225 95 Q220 110 228 120" fill="none" stroke="#e08a3c" stroke-width="5" stroke-linecap="round"/>
+    <p>She did Haiku, she cracked Mystery Room,<br>
+    Binged Hostel Daze, then (oh, the doom)<br>
+    Watched Kung Fu Panda. His film. His Po.<br>
+    He’d have quoted every line, you know.</p>
 
-      <!-- Hard hat -->
-      <path d="M142 108 Q144 48 200 46 Q256 48 258 108 Z" fill="#ffc93c"/>
-      <rect x="190" y="47" width="20" height="60" rx="5" fill="#f5b700"/>
-      <rect x="122" y="100" width="156" height="18" rx="9" fill="#f5b700"/>
+    <p>“I’m not jealous,” he declared,<br>
+    To no one, since nobody cared.<br>
+    He said it twice, he said it thrice,<br>
+    By seven times, it sounded nice.</p>
 
-      <!-- Face -->
-      <circle cx="174" cy="155" r="10" fill="#2b2b2b"/>
-      <circle cx="226" cy="155" r="10" fill="#2b2b2b"/>
-      <circle cx="177" cy="151" r="3.5" fill="#fff"/>
-      <circle cx="229" cy="151" r="3.5" fill="#fff"/>
-      <ellipse cx="155" cy="180" rx="12" ry="7" fill="#ff8fa3" opacity="0.55"/>
-      <ellipse cx="245" cy="180" rx="12" ry="7" fill="#ff8fa3" opacity="0.55"/>
-      <path d="M193 172 L207 172 L200 180 Z" fill="#ff8fa3"/>
-      <path d="M200 180 Q194 190 186 185 M200 180 Q206 190 214 185" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M150 172 L118 166 M150 180 L118 184 M250 172 L282 166 M250 180 L282 184" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/>
+    <p>His fever climbed one point, then two.<br>
+    “It’s just the weather,” he said. “Achoo.”<br>
+    Jignesh checked his chart and sighed:<br>
+    “Acute Bang-itis, left untried.”</p>
 
-      <!-- Board (flips) -->
-      <g id="board">
-        <g id="front">
-          <rect x="92" y="228" width="216" height="112" rx="12" fill="#e9b872" stroke="#8b5a2b" stroke-width="4"/>
-          <rect x="104" y="240" width="192" height="18" rx="4" fill="url(#hz)"/>
-          <g font-family="'Trebuchet MS', Arial, sans-serif" text-anchor="middle">
-            <text x="200" y="288" font-size="22" font-weight="bold" fill="#5a3a1a">UNDER</text>
-            <text x="200" y="314" font-size="22" font-weight="bold" fill="#5a3a1a">MAINTENANCE</text>
-            <text x="200" y="332" font-size="13" fill="#7a5230">Back soon!</text>
-          </g>
-        </g>
+    <p>He put the Barney suit back on,<br>
+    Said, “I’ll be awesome. Feelings, be gone.”<br>
+    But awesome only lasts so long<br>
+    When someone else is in the song.</p>
 
-        <g id="back" class="hidden">
-          <rect x="92" y="228" width="216" height="112" rx="12" fill="#e9b872" stroke="#8b5a2b" stroke-width="4"/>
-          <rect x="102" y="238" width="196" height="92" rx="6" fill="#ffffff"/>
-          <image href="assets/troll.jpeg"
-                 x="102" y="238" width="196" height="92"
-                 preserveAspectRatio="xMidYMid meet"
-                 clip-path="url(#photoClip)"/>
-        </g>
-      </g>
+    <p>So here’s the fox’s humble plea:<br>
+    No flirting till December? Agreed. (Mostly.)<br>
+    But if a line slips out by mistake,<br>
+    Don’t go red, ma’am. For Po’s sake.</p>
+    </div>
 
-      <!-- Paws (stay on top of the board) -->
-      <g id="paws">
-        <ellipse cx="138" cy="230" rx="20" ry="13" fill="#f4a259"/>
-        <ellipse cx="262" cy="230" rx="20" ry="13" fill="#f4a259"/>
-        <path d="M131 222 L131 232 M145 222 L145 232 M255 222 L255 232 M269 222 L269 232" stroke="#e08a3c" stroke-width="2" stroke-linecap="round"/>
-      </g>
-    </g>
-  </svg>
+    <p class="ps"><b>P.S.</b> Dumb fox has requested this poem be clearly labelled fiction. HR has labelled it “Evidence.”<span class="hanko" aria-hidden="true">EVIDENCE</span></p>
 
-  <p class="hint">👆 <span class="click">Click</span><span class="tap">Tap</span> the cat to flip the sign</p>
+    <p class="signoff">x</p>
+  </section>
 
-  <script>
-    const cat = document.getElementById('cat');
-    const board = document.getElementById('board');
-    const front = document.getElementById('front');
-    const back = document.getElementById('back');
-    const paws = document.getElementById('paws');
-    const HALF = 220;
-    let busy = false;
+  <section aria-labelledby="sticker-title">
+    <h2 id="sticker-title">Sticker of the week</h2>
+    <p class="collect">A new one every edition. Collect them all!</p>
+    <!-- EACH EDITION: change data-edition to the new date so the pack comes back sealed -->
+    <div class="sticker-stage" id="sticker-stage" data-edition="2026-10-21">
+      <div class="holo sealed" id="holo">
 
-    function flip() {
-      if (busy) return;
-      busy = true;
+        <div class="pack-back" id="pack-back" aria-hidden="true"><div class="lining"></div></div>
+        <div class="sticker" id="sticker" role="button" tabindex="-1" aria-hidden="true" aria-haspopup="dialog" aria-label="Holographic collector card of Om Nom sitting in a pile of candy, 21 October 2026. Open to download it.">
+          <img class="art" id="card-art" alt="" width="750" height="1050" src="assets/sticker-004-om-nom.webp">
+          <div class="foil"></div>
+          <div class="sheen"></div>
+          <div class="etch"></div>
+          <div class="glare"></div>
+        </div>
 
-      paws.classList.add('lift');
-      board.classList.remove('expand');
-      board.classList.add('squash');
+        <div class="pack" id="pack">
+          <div class="pack-flap" id="pack-flap" role="button" tabindex="0" aria-label="Tear open this week's sticker pack">
+            <!-- the strip is cut into slices by the script; this is one slice's artwork -->
+            <template id="flap-tpl">
+              <div class="skin">
+                <div class="puff"></div>
+                <div class="crimp top"></div>
+                <div class="p-glare"></div>
+                <div class="flap-ui" aria-hidden="true">
+                  <div class="tear-line">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>
+                    tear here
+                  </div>
+                </div>
+              </div>
+              <div class="slice-back"></div>
+            </template>
+            <div class="flap-hint"></div>
+          </div>
 
-      setTimeout(() => {
-        front.classList.toggle('hidden');
-        back.classList.toggle('hidden');
-        board.classList.add('expand');
-        board.classList.remove('squash');
-        paws.classList.remove('lift');
+          <div class="pack-body" id="pack-body" aria-hidden="true">
+            <div class="skin">
+              <svg class="pack-scene" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="pfj" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6f79a6"/><stop offset="1" stop-color="#c4c3da"/></linearGradient>
+                  <linearGradient id="pms" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fbf8f6" stop-opacity=".95"/></linearGradient>
+                </defs>
+                <circle cx="8" cy="9" r="3.6" fill="#e9798f" opacity=".7"/>
+                <path d="M0 22C14 17 26 20 40 18S70 15 100 19V34H0Z" fill="#c9c6dc"/>
+                <path d="M58 34C70 26 78 16 84 9Q87.5 6.6 91 9C97 16 105 26 117 34Z" fill="url(#pfj)"/>
+                <path d="M84 9Q87.5 6.6 91 9L94 13 92 12.4 90.6 14.4 88.8 12.8 87.4 15 86 12.9 84.4 14.6 83.2 12.6 81.2 13.2Z" fill="#fff"/>
+                <g fill="#8e8db0" transform="translate(9 26)">
+                  <rect x="-.25" y="-9.5" width=".5" height="2.5"/>
+                  <path d="M-4 -6.4H4L2.8 -7.4H-2.8Z"/><rect x="-2.2" y="-6.4" width="4.4" height="1.5"/>
+                  <path d="M-4.6 -4H4.6L3.2 -5.2H-3.2Z"/><rect x="-2.4" y="-4" width="4.8" height="1.6"/>
+                  <path d="M-5.2 -1.6H5.2L3.6 -2.9H-3.6Z"/><rect x="-2.6" y="-1.6" width="5.2" height="4"/>
+                </g>
+                <path d="M0 27C20 24 40 28 60 25S90 24 100 26V34H0Z" fill="#b5b4ce" opacity=".7"/>
+                <rect y="16" width="100" height="18" fill="url(#pms)"/>
+              </svg>
+              <div class="pack-frame"></div>
+              <div class="pack-brand">Kunjum-Kunjum Post</div>
+              <div class="pack-sub">Sticker of the week, 21 Oct 2026</div>
 
-        setTimeout(() => { busy = false; }, HALF);
-      }, HALF);
+              <div class="pack-art">
+                <img src="assets/milkmocha.jpg" alt="" width="512" height="512" decoding="async">
+              </div>
+
+
+              <span class="glint"><svg viewBox="-12 -12 24 24"><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(0)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(72)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(144)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(216)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(288)" fill="currentColor"/><circle r="2" fill="#e7a24a"/></svg></span>
+              <span class="glint"><svg viewBox="-12 -12 24 24"><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(0)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(72)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(144)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(216)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(288)" fill="currentColor"/><circle r="2" fill="#e7a24a"/></svg></span>
+              <span class="glint"><svg viewBox="-12 -12 24 24"><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(0)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(72)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(144)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(216)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(288)" fill="currentColor"/><circle r="2" fill="#e7a24a"/></svg></span>
+              <span class="glint"><svg viewBox="-12 -12 24 24"><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(0)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(72)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(144)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(216)" fill="currentColor"/><ellipse cx="0" cy="-6" rx="4.4" ry="6.2" transform="rotate(288)" fill="currentColor"/><circle r="2" fill="#e7a24a"/></svg></span>
+
+              <svg class="pack-branch" viewBox="0 0 100 48" aria-hidden="true">
+                <path d="M104 2C80 10 60 20 30 40" stroke="#6b4a3a" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                <path d="M74 14C78 20 80 24 82 30M56 22C52 16 50 12 52 6" stroke="#6b4a3a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <g transform="translate(96 6)" fill="#f4b6c6"><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(57)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(129)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(201)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(273)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(345)"/><circle r="1.3" fill="#e7a24a"/></g><g transform="translate(84 10)" fill="#f9d3dd"><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(71)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(143)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(215)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(287)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(359)"/><circle r="1.4" fill="#e7a24a"/></g><g transform="translate(72 15)" fill="#f0a5b8"><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(59)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(131)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(203)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(275)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(347)"/><circle r="1.3" fill="#e7a24a"/></g><g transform="translate(60 22)" fill="#f4b6c6"><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(57)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(129)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(201)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(273)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(345)"/><circle r="1.4" fill="#e7a24a"/></g><g transform="translate(48 29)" fill="#f9d3dd"><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(65)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(137)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(209)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(281)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(353)"/><circle r="1.3" fill="#e7a24a"/></g><g transform="translate(36 35)" fill="#f0a5b8"><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(24)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(96)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(168)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(240)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(312)"/><circle r="1.1" fill="#e7a24a"/></g><g transform="translate(78 22)" fill="#f9d3dd"><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(23)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(95)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(167)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(239)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(311)"/><circle r="1.1" fill="#e7a24a"/></g><g transform="translate(66 30)" fill="#f4b6c6"><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(65)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(137)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(209)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(281)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(353)"/><circle r="1.1" fill="#e7a24a"/></g><g transform="translate(90 17)" fill="#f0a5b8"><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(60)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(132)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(204)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(276)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(348)"/><circle r="0.9" fill="#e7a24a"/></g><g transform="translate(54 13)" fill="#fbe1e8"><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(23)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(95)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(167)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(239)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(311)"/><circle r="0.9" fill="#e7a24a"/></g><g transform="translate(42 40)" fill="#f9d3dd"><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(12)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(84)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(156)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(228)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(300)"/><circle r="0.9" fill="#e7a24a"/></g><g transform="translate(28 41)" fill="#f4b6c6"><ellipse cx="0" cy="-2.2" rx="1.7" ry="2.3" transform="rotate(57)"/><ellipse cx="0" cy="-2.2" rx="1.7" ry="2.3" transform="rotate(129)"/><ellipse cx="0" cy="-2.2" rx="1.7" ry="2.3" transform="rotate(201)"/><ellipse cx="0" cy="-2.2" rx="1.7" ry="2.3" transform="rotate(273)"/><ellipse cx="0" cy="-2.2" rx="1.7" ry="2.3" transform="rotate(345)"/><circle r="0.7" fill="#e7a24a"/></g>
+              </svg>
+              <div class="pack-seal" aria-hidden="true">桜</div>
+              <div class="pack-meta">Pack 004 of 012</div>
+
+
+              <div class="puff"></div>
+              <div class="crimp bottom"></div>
+              <div class="p-foil"></div>
+              <div class="p-etch"></div>
+              <div class="p-glare"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <button class="tilt-btn" id="tilt-btn" type="button" hidden>Turn on tilt</button>
+    <p class="sticker-note" id="sticker-note" aria-live="polite"></p>
+    <p class="save-hint" id="save-hint"></p>
+    <button class="reseal" id="reseal" type="button" hidden>Wrap it back up</button>
+    <dialog class="save-dialog" id="save-dialog" aria-labelledby="save-title">
+      <img src="assets/sticker-004-om-nom.webp" alt="Collector card: Om Nom and Candy" id="save-preview" width="150" height="210" loading="lazy">
+      <p id="save-title">Want to keep this one?</p>
+      <div class="save-actions">
+        <a id="save-card" href="assets/sticker-004-om-nom.png" download="sticker-004-om-nom.png">Download the card</a>
+        <a id="save-link" class="plain" href="assets/om_nom.png" download="om_nom.png">Just the picture</a>
+        <button type="button" id="save-cancel">Not now</button>
+      </div>
+    </dialog>
+  </section>
+
+  <footer>
+    See you next week
+    <svg class="sprig" viewBox="0 0 130 50" aria-hidden="true"><path d="M8 40C40 34 70 24 112 10" stroke="#6b4a3a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M60 27C70 36 80 40 92 42" stroke="#6b4a3a" stroke-width="2" fill="none" stroke-linecap="round"/><g transform="translate(20 36)" fill="#f4b6c6"><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(30)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(141)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(160)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(263)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(348)"/><circle r="1.4" fill="#e7a24a"/></g><g transform="translate(44 29)" fill="#f0a5b8"><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(8)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(73)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(204)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(249)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(358)"/><circle r="1.5" fill="#e7a24a"/></g><g transform="translate(70 21)" fill="#f9d3dd"><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(29)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(96)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(204)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(285)"/><ellipse cx="0" cy="-4.4" rx="3.4" ry="4.6" transform="rotate(358)"/><circle r="1.4" fill="#e7a24a"/></g><g transform="translate(96 14)" fill="#f4b6c6"><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(60)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(122)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(163)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(245)"/><ellipse cx="0" cy="-5.0" rx="3.8" ry="5.2" transform="rotate(307)"/><circle r="1.5" fill="#e7a24a"/></g><g transform="translate(118 8)" fill="#f9d3dd"><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(66)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(121)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(145)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(224)"/><ellipse cx="0" cy="-3.3" rx="2.5" ry="3.5" transform="rotate(308)"/><circle r="1.0" fill="#e7a24a"/></g><g transform="translate(86 41)" fill="#f0a5b8"><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(5)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(110)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(147)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(250)"/><ellipse cx="0" cy="-3.9" rx="2.9" ry="4.1" transform="rotate(348)"/><circle r="1.2" fill="#e7a24a"/></g><g transform="translate(56 34)" fill="#f9d3dd"><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(49)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(126)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(194)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(272)"/><ellipse cx="0" cy="-2.8" rx="2.1" ry="2.9" transform="rotate(305)"/><circle r="0.9" fill="#e7a24a"/></g></svg>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('sticker-stage');
+  var holo  = document.getElementById('holo');
+  var card  = document.getElementById('sticker');
+  var pack  = document.getElementById('pack');
+  var packBack = document.getElementById('pack-back');
+  var flap  = document.getElementById('pack-flap');
+  var body  = document.getElementById('pack-body');
+  var tpl   = document.getElementById('flap-tpl');
+  var note  = document.getElementById('sticker-note');
+  var hint  = document.getElementById('save-hint');
+  var btn   = document.getElementById('tilt-btn');
+  var reseal = document.getElementById('reseal');
+  if (!holo) return;
+
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var MAX_TILT = reduce ? 4 : 12;      // degrees of rotation at full tilt
+  var GYRO_RANGE = 18;                 // phone tilt (deg) that maps to full sticker tilt
+  var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+  var KEY = 'kk-pack-' + (stage.getAttribute('data-edition') || 'current');
+
+  var mode = 'none';     // none | pointer | gyro | denied
+  var sealed = true;
+  try { sealed = localStorage.getItem(KEY) !== 'open'; } catch (e) {}
+
+  /* ---- words under the card ---- */
+  function say(text) { if (note.textContent !== text) note.textContent = text; }
+  function lightMsg() {
+    if (mode === 'gyro') return 'Tilt your phone to catch the light';
+    if (mode === 'denied') return 'Motion is off, so drag across it instead';
+    return coarse ? 'Drag across it to catch the light' : 'Move your cursor around it';
+  }
+  function refresh() {
+    if (sealed) {
+      say(coarse ? 'Swipe along the top to tear it open' : 'Drag along the top to tear it open');
+      hint.textContent = lightMsg();
+    } else {
+      say(lightMsg());
+      hint.textContent = coarse ? 'Tap the card to download it' : 'Click the card to download it';
+    }
+    reseal.hidden = sealed;
+    card.tabIndex = sealed ? -1 : 0;
+    card.setAttribute('aria-hidden', sealed ? 'true' : 'false');
+  }
+
+  /* ---- click the card to open the download box ---- */
+  var dlg = document.getElementById('save-dialog');
+  var link = document.getElementById('save-link');
+  var cardLink = document.getElementById('save-card');
+  function openSave() {
+    if (sealed) return;
+    if (dlg.showModal) dlg.showModal();
+    else if (confirm('Download the collector card?')) cardLink.click();
+  }
+  // a click counts only if the pointer barely moved (so tilting by drag doesn't open it)
+  var downAt = null;
+  card.addEventListener('pointerdown', function (e) { downAt = { x: e.clientX, y: e.clientY }; });
+  card.addEventListener('click', function (e) {
+    if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > 8) return;
+    openSave();
+  });
+  card.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSave(); }
+  });
+  document.getElementById('save-cancel').addEventListener('click', function () { dlg.close(); });
+  [link, cardLink].forEach(function (a) {
+    a.addEventListener('click', function () { setTimeout(function () { dlg.close(); }, 50); });
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });  // tap outside
+
+  /* ---- tilt + light ---- */
+  var tx = 0, ty = 0;   // target, -1..1
+  var cx = 0, cy = 0;   // current (smoothed)
+  var visible = true;
+
+  function clamp(v) { return v < -1 ? -1 : v > 1 ? 1 : v; }
+  function setTarget(x, y) { tx = clamp(x); ty = clamp(y); }
+
+  function frame() {
+    cx += (tx - cx) * 0.1;
+    cy += (ty - cy) * 0.1;
+    var s = holo.style;
+    s.setProperty('--rx', (-cy * MAX_TILT).toFixed(2) + 'deg');
+    s.setProperty('--ry', ( cx * MAX_TILT).toFixed(2) + 'deg');
+    // the light sits opposite to the side that dips away
+    s.setProperty('--gx', (50 - cx * 45).toFixed(1) + '%');
+    s.setProperty('--gy', (50 - cy * 45).toFixed(1) + '%');
+    // foil bands slide as the angle changes
+    s.setProperty('--px', (50 + cx * 50).toFixed(1) + '%');
+    s.setProperty('--py', (50 + cy * 50).toFixed(1) + '%');
+    s.setProperty('--glow', Math.min(1, 0.35 + Math.hypot(cx, cy) * 0.65).toFixed(3));
+    s.setProperty('--sx', (-cx * 8).toFixed(1) + 'px');
+    s.setProperty('--sy', (10 - cy * 6).toFixed(1) + 'px');
+    if (visible) requestAnimationFrame(frame);
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      var was = visible;
+      visible = entries[0].isIntersecting;
+      if (visible && !was) requestAnimationFrame(frame);
+    }).observe(holo);
+  }
+  requestAnimationFrame(frame);
+
+  /* cursor (laptops / desktops) */
+  window.addEventListener('pointermove', function (e) {
+    if (mode === 'gyro' || e.pointerType === 'touch') return;
+    if (mode !== 'pointer') { mode = 'pointer'; refresh(); }
+    var r = holo.getBoundingClientRect();
+    var reach = Math.max(r.width, r.height) * 0.9;
+    setTarget((e.clientX - (r.left + r.width / 2)) / reach,
+              (e.clientY - (r.top + r.height / 2)) / reach);
+  });
+  document.addEventListener('mouseout', function (e) {
+    if (!e.relatedTarget && mode === 'pointer') setTarget(0, 0);
+  });
+
+  /* finger drag (touch devices without gyro access) */
+  function touchMove(e) {
+    if (mode === 'gyro' || e.pointerType !== 'touch' || drag) return;
+    var r = holo.getBoundingClientRect();
+    setTarget((e.clientX - (r.left + r.width / 2)) / (r.width / 2),
+              (e.clientY - (r.top + r.height / 2)) / (r.height / 2));
+  }
+  holo.addEventListener('pointerdown', touchMove);
+  holo.addEventListener('pointermove', touchMove);
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) {
+    holo.addEventListener(t, function (e) {
+      if (mode !== 'gyro' && e.pointerType === 'touch') setTarget(0, 0);
+    });
+  });
+
+  /* gyroscope (phones / tablets) */
+  var base = null;
+  function onOrient(e) {
+    if (e.beta == null || e.gamma == null) return;
+    if (mode !== 'gyro') { mode = 'gyro'; refresh(); }
+    if (!base) base = { b: e.beta, g: e.gamma };
+    // slowly recentre on however the phone is being held
+    base.b += (e.beta  - base.b) * 0.006;
+    base.g += (e.gamma - base.g) * 0.006;
+    var db = e.beta - base.b, dg = e.gamma - base.g;
+
+    var angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+    var x = dg, y = db;
+    if (angle === 90)       { x =  db; y = -dg; }
+    else if (angle === -90 || angle === 270) { x = -db; y =  dg; }
+    else if (angle === 180) { x = -dg; y = -db; }
+
+    setTarget(x / GYRO_RANGE, -y / GYRO_RANGE);
+  }
+
+  var DOE = window.DeviceOrientationEvent;
+  if (DOE && typeof DOE.requestPermission === 'function') {
+    // iPhone / iPad: motion access needs a tap first
+    if (coarse) {
+      btn.hidden = false;
+      btn.addEventListener('click', function () {
+        DOE.requestPermission().then(function (state) {
+          btn.hidden = true;
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', onOrient);
+            mode = 'gyro';
+          } else {
+            mode = 'denied';
+          }
+          refresh();
+        }).catch(function () { btn.hidden = true; });
+      });
+    }
+  } else if (DOE) {
+    // Android and others: starts straight away (needs https)
+    window.addEventListener('deviceorientation', onOrient);
+  }
+
+  /* ---- the tear strip: cut into thin slices that peel away one after another ---- */
+  var N = 28;
+  var slices = [];
+  for (var i = 0; i < N; i++) {
+    var sl = document.createElement('div');
+    sl.className = 'slice';
+    sl.appendChild(tpl.content.cloneNode(true));
+    flap.appendChild(sl);
+    slices.push(sl);
+  }
+  var W = 0, H = 0, SW = 0;
+  function measure() {
+    W = flap.offsetWidth; H = flap.offsetHeight; SW = W / N;
+    if (!W) return;
+    slices.forEach(function (s, i) {
+      var x = i * SW;
+      s.style.left = x + 'px';
+      s.style.width = (SW + 1) + 'px';                 // 1px overlap hides seams
+      s.style.transformOrigin = (-x) + 'px 0px';        // transforms work in strip coordinates
+      var mp = (-x) + 'px 0px, ' + (-x) + 'px 100%';    // keep the zigzags continuous
+      s.style.webkitMaskPosition = mp;
+      s.style.maskPosition = mp;
+      var sk = s.firstElementChild;
+      sk.style.left = (-x) + 'px';
+      sk.style.width = W + 'px';
+      var bk = s.lastElementChild;                      // silver lines up across slices too
+      bk.style.left = (-x) + 'px';
+      bk.style.width = W + 'px';
+    });
+    renderTear();
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(measure).observe(flap);
+  else window.addEventListener('resize', measure);
+
+  var tf = 0;       // how far along the tear has got, 0..1
+  var tdir = 0;     // 1 = tearing left to right, -1 = right to left
+  var CURL = 11, CURL_MAX = 165;   // how much each slice folds back on itself, and the limit
+  var LIFT_MAX = 26;               // how far the torn piece is raised, in degrees
+
+  function renderTear() {
+    var done = {};
+    if (tf > 0 && W) {
+      var fw = Math.min(tf, 0.9999) * N;
+      var k = Math.floor(fw), frac = fw - k;
+      // the tear front, where the torn piece is still attached
+      var fx = tdir > 0 ? (k + 1) * SW : (N - 1 - k) * SW;
+      // once it has folded back, the whole torn piece is raised up off the pack
+      var lift = LIFT_MAX * Math.min(1, fw / 12) * Math.min(1, fw / 12) * (0.6 + 0.4 * tf);
+      var M = new DOMMatrix()
+        .translate(fx, H)
+        .rotateAxisAngle(0, 0, 1, -tdir * lift)
+        .translate(-fx, -H);
+      var bent = 0;
+      // perspective, seen from the middle of the tear line, applied per slice
+      var P = new DOMMatrix().translate(W / 2, H)
+        .multiply(new DOMMatrix([1,0,0,0, 0,1,0,0, 0,0,1,-1 / 700, 0,0,0,1]))
+        .translate(-W / 2, -H);
+      // walk from the tear front out to the free end, each slice hinged on the one before
+      for (var t = 0; t <= k; t++) {
+        var j = tdir > 0 ? k - t : N - 1 - k + t;
+        var amt = t === 0 ? frac : 1;
+        var hx = tdir > 0 ? (j + 1) * SW : j * SW;
+        var b = Math.max(0, Math.min(CURL, CURL_MAX - bent)) * amt; bent += b;
+        M = M.multiply(new DOMMatrix()
+          .translate(hx, 0)
+          .rotateAxisAngle(0, 1, 0, tdir * b)
+          .translate(-hx, 0));
+        slices[j].style.transform = P.multiply(M).toString();
+        slices[j].style.zIndex = 10 + t;                 // the folded-back end sits nearest to you
+        slices[j].style.setProperty('--lit', (0.62 + 0.5 * Math.abs(M.m33)).toFixed(3));  // light falls off as it turns
+        slices[j].classList.add('torn');
+        slices[j].classList.toggle('back', M.m33 < 0);   // turned over: show the silver inside
+        done[j] = true;
+      }
+    }
+    for (var i = 0; i < N; i++) {
+      if (!done[i]) {
+        slices[i].style.transform = '';
+        slices[i].style.zIndex = '';
+        slices[i].classList.remove('back', 'torn');
+      }
+    }
+  }
+
+  function buzz(ms) { if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) {} } }
+
+  function tearTo(f) {
+    if (f <= tf) return;
+    var before = Math.floor(tf * N);
+    tf = Math.min(1, f);
+    if (Math.floor(tf * N) > before) buzz(4);
+    flap.classList.add('tearing');
+    renderTear();
+    if (tf >= 1) finishTear();
+  }
+
+  var drag = null;
+  flap.addEventListener('pointerdown', function (e) {
+    if (!sealed || opening) return;
+    e.stopPropagation();
+    flap.setPointerCapture(e.pointerId);
+    drag = { id: e.pointerId, x: e.clientX, f0: tf, moved: false };
+  });
+  flap.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var dx = e.clientX - drag.x;
+    if (Math.abs(dx) > 4) drag.moved = true;
+    if (!tdir) {
+      if (Math.abs(dx) < 6) return;
+      tdir = dx > 0 ? 1 : -1;
+      drag.x = e.clientX - tdir * 6;
+      dx = e.clientX - drag.x;
+    }
+    // the tear only ever moves forward, following the finger
+    tearTo(drag.f0 + (dx * tdir) / W * 1.1);
+  });
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var d = drag; drag = null;
+    if (!d.moved && tf === 0) wiggle();
+  }
+  flap.addEventListener('pointerup', endDrag);
+  flap.addEventListener('pointercancel', endDrag);
+
+  // tapping the pack gives it a little shake, to show it wants tearing
+  function wiggle() {
+    if (reduce || !pack.animate) return;
+    pack.animate([
+      { transform: 'rotate(0)' }, { transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' },
+      { transform: 'rotate(-1deg)' }, { transform: 'rotate(0)' }
+    ], { duration: 420, easing: 'ease-out' });
+  }
+  body.addEventListener('click', function () { if (sealed) wiggle(); });
+
+  // keyboard: Enter or Space tears it all the way along
+  flap.addEventListener('keydown', function (e) {
+    if (!sealed || opening || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    if (!tdir) tdir = 1;
+    var from = tf, start = performance.now(), dur = reduce ? 1 : 1100 * (1 - from);
+    (function step(now) {
+      var p = Math.min(1, (now - start) / dur);
+      tearTo(from + (1 - from) * p);
+      if (p < 1 && !opening) requestAnimationFrame(step);
+    })(start);
+  });
+
+  var opening = false;
+  function finishTear() {
+    if (opening) return;
+    opening = true;
+    drag = null;
+    buzz([10, 30, 16]);
+    var dir = tdir || 1;
+    var focusWasOnFlap = document.activeElement === flap;
+
+    function done() {
+      opening = false;
+      [flap, body, packBack].forEach(function (el) {
+        if (el.getAnimations) el.getAnimations().forEach(function (a) { a.cancel(); });
+      });
+      setSealed(false);
+      if (focusWasOnFlap) card.focus();
     }
 
-    cat.addEventListener('click', flip);
-    cat.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        flip();
+    if (reduce || !pack.animate) {
+      holo.classList.remove('sealed');
+      done();
+      return;
+    }
+    // the torn strip comes away...
+    flap.animate([
+      { transform: 'none', opacity: 1 },
+      { transform: 'translate(' + (dir * 22) + '%, -150%) rotate(' + (-dir * 14) + 'deg)', opacity: 0 }
+    ], { duration: 700, easing: 'cubic-bezier(.3,.6,.4,1)', fill: 'forwards' });
+    // ...the card rises out of the opening...
+    setTimeout(function () { holo.classList.remove('sealed'); }, 350);
+    setTimeout(burst, 900);
+    // ...and the empty wrapper drops away
+    var drop = [
+      { transform: 'none', opacity: 1 },
+      { transform: 'translateY(4%)', opacity: 1, offset: .25 },
+      { transform: 'translateY(60%) rotate(' + (dir * 6) + 'deg)', opacity: 0 }
+    ];
+    var opts = { duration: 800, delay: 1250, easing: 'cubic-bezier(.55,0,.7,.4)', fill: 'forwards' };
+    packBack.animate(drop, opts);
+    body.animate(drop, opts).onfinish = done;
+  }
+
+  // blossoms and glints fly out as the card appears
+  function burst() {
+    var bits = ['\u273F', '\uD83C\uDF38', '\u2726', '\u2740', '\uD83C\uDF38', '\u2727'];
+    var colors = ['#e48aa3', '#3a4a78', '#e9b44c', '#f4b6c6', '#7d8fbf'];
+    for (var i = 0; i < 22; i++) {
+      var s = document.createElement('span');
+      s.className = 'burst';
+      s.setAttribute('aria-hidden', 'true');
+      s.textContent = bits[i % bits.length];
+      s.style.color = colors[i % colors.length];
+      s.style.fontSize = (12 + Math.random() * 16).toFixed(0) + 'px';
+      stage.appendChild(s);
+      var a = (i / 22) * Math.PI * 2 + Math.random() * .4;
+      var d = 110 + Math.random() * 90;
+      var anim = s.animate([
+        { transform: 'translate(-50%, -50%) scale(.3)', opacity: 0 },
+        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: .2 },
+        { transform: 'translate(calc(-50% + ' + (Math.cos(a) * d).toFixed(0) + 'px), calc(-50% + ' + (Math.sin(a) * d * 1.2 + 40).toFixed(0) + 'px)) rotate(' + (Math.random() * 180 - 90).toFixed(0) + 'deg) scale(.8)', opacity: 0 }
+      ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(.15,.7,.4,1)', fill: 'forwards' });
+      anim.onfinish = (function (el) { return function () { el.remove(); }; })(s);
+    }
+  }
+
+  function setSealed(v) {
+    sealed = v;
+    try { v ? localStorage.removeItem(KEY) : localStorage.setItem(KEY, 'open'); } catch (e) {}
+    holo.classList.toggle('sealed', v);
+    pack.hidden = packBack.hidden = !v;
+    if (v) {
+      tf = 0; tdir = 0;
+      flap.classList.remove('tearing');
+    }
+    renderTear();
+    refresh();
+  }
+
+  reseal.addEventListener('click', function () {
+    setSealed(true);
+    measure();
+    flap.focus();
+  });
+
+  holo.classList.toggle('sealed', sealed);
+  pack.hidden = packBack.hidden = !sealed;
+  measure();
+  refresh();
+})();
+</script>
+<script>
+/* ---- sakura petals: they flutter down, ride the breeze, and pile softly at the bottom ---- */
+(function () {
+  var cv = document.getElementById('petals');
+  if (!cv || !cv.getContext || !window.Path2D) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var narrow = window.matchMedia ? matchMedia('(max-width: 599px)') : { matches: false };
+  var dark = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : { matches: false };
+
+  // a petal with the little notch at its tip, drawn in a 100-unit box
+  var PETAL = new Path2D('M0 44C-30 22 -32 -28 -11 -42L0 -32L11 -42C32 -28 30 22 0 44Z');
+  var VEIN = new Path2D('M0 38L0 -26');
+  var LIGHT = [['#f8c9d6', '#f2b0c3'], ['#fbdde6', '#f4c3d1'], ['#f4b6c6', '#ec9cb3'], ['#fff1f4', '#f6d3dd']];
+  var DARK  = [['#c98aa0', '#a8697f'], ['#dba5b8', '#b88296'], ['#b77a90', '#94586e'], ['#e7c3cf', '#c7a0ad']];
+
+  var W = 0, H = 0, petals = [], pile = [], count = 0, MAX_PILE = 60;
+  var ptr = { x: 0, y: 0, on: false, down: false };
+  var t = 0, last = 0, running = false;
+  var gust = 0, gustTarget = 0, nextGust = 4;
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function colors() { return dark.matches ? DARK : LIGHT; }
+
+  function make(atTop) {
+    var small = narrow.matches, c = colors();
+    return {
+      x: rand(-20, W + 20),
+      y: atTop ? rand(-H * 0.3, -20) : rand(-20, H),
+      s: rand(small ? 0.1 : 0.12, small ? 0.17 : 0.22),
+      c: c[Math.floor(Math.random() * c.length)],
+      fall: rand(24, 46), vx: 0, vy: 30,
+      land: rand(3, 22),
+      sway: rand(18, 46), swayF: rand(0.5, 1.2), ph: rand(0, 6.28),
+      rot: rand(0, 6.28), spin: rand(-1.8, 1.8),
+      flip: rand(0, 6.28), flipF: rand(1.6, 3.6)
+    };
+  }
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    count = narrow.matches ? Math.round(clamp(W * H / 40000, 7, 12))
+                           : Math.round(clamp(W * H / 26000, 20, 56));
+    MAX_PILE = Math.round(clamp(W / 18, 24, 100));
+    while (petals.length < count) petals.push(make(false));
+    petals.length = count;
+    pile = pile.filter(function (p) { return p.x < W + 30; });
+    pile.forEach(function (p) { p.y = H - p.lift; });
+    if (reduce) draw();
+  }
+
+  function wind(y) {
+    return 12 * Math.sin(t * 0.09) + 7 * Math.sin(t * 0.23 + 1.3)
+         + gust * (0.65 + 0.35 * Math.sin(y * 0.008 + t * 0.6));
+  }
+
+  function step(dt) {
+    t += dt;
+    nextGust -= dt;
+    if (nextGust <= 0) { gustTarget = rand(-1, 1) * 80; nextGust = rand(6, 12); }
+    gustTarget *= Math.pow(0.6, dt);
+    gust += (gustTarget - gust) * Math.min(1, dt * 1.2);
+
+    for (var j = 0; j < petals.length; j++) {
+      var p = petals[j];
+      var tx = wind(p.y) + p.sway * Math.cos(t * p.swayF + p.ph);
+      var ty = p.fall * (0.7 + 0.3 * Math.sin(t * p.swayF * 2 + p.ph));
+      var ease = Math.min(1, dt * 2);
+      p.vx += (tx - p.vx) * ease;
+      p.vy += (ty - p.vy) * ease;
+      if (ptr.on) {
+        var dx = p.x - ptr.x, dy = p.y - ptr.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+        if (d < 110) { var f = (1 - d / 110) * (1 - d / 110) * 900 * dt; p.vx += dx / d * f; p.vy += dy / d * f; }
       }
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      p.rot += (p.spin + p.vx * 0.015) * dt;
+      p.flip += p.flipF * dt * (1 + Math.abs(p.vx) / 80);
+
+      if (!narrow.matches && p.vy > 0 && p.y > H - p.land && pile.length < MAX_PILE) {
+        pile.push({ x: p.x, lift: p.land, y: H - p.land, rot: p.rot, s: p.s, c: p.c[0],
+                    sx: Math.cos(p.flip) < 0 ? -0.75 : 0.75, age: 0, life: rand(25, 50) });
+        p.y = H + 100;
+      }
+      if (p.y > H + 30) {
+        if (petals.length > count) { petals.splice(j, 1); j--; }
+        else petals[j] = make(true);
+      }
+      else if (p.x < -40) p.x = W + 30;
+      else if (p.x > W + 40) p.x = -30;
+    }
+    for (var i = pile.length - 1; i >= 0; i--) {
+      pile[i].age += dt;
+      if (pile[i].age > pile[i].life + 3) pile.splice(i, 1);
+    }
+  }
+
+  // tap or click: nearby petals scatter, and any in the heap puff back up
+  function kick(x, y) {
+    petals.forEach(function (p) {
+      var dx = p.x - x, dy = p.y - y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+      if (d < 160) { var f = 1 - d / 160; p.vx += dx / d * 260 * f; p.vy += (dy / d * 260 - 130) * f; p.spin += rand(-4, 4) * f; }
     });
-  </script>
+    for (var i = pile.length - 1; i >= 0; i--) {
+      var q = pile[i], dx = q.x - x, dy = q.y - y;
+      if (dx * dx + dy * dy < 190 * 190) {
+        var p = make(false);
+        p.x = q.x; p.y = q.y - 4; p.s = q.s; p.rot = q.rot;
+        p.vx = (dx < 0 ? -1 : 1) * rand(50, 170); p.vy = -rand(160, 280); p.spin = rand(-5, 5);
+        petals.push(p);
+        pile.splice(i, 1);
+      }
+    }
+  }
+  document.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch' && !ptr.down) return;
+    ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true;
+  }, { passive: true });
+  document.addEventListener('pointerdown', function (e) {
+    ptr.down = true; ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true;
+    if (running) kick(e.clientX, e.clientY);
+  }, { passive: true });
+  ['pointerup', 'pointercancel'].forEach(function (ty) {
+    document.addEventListener(ty, function (e) { ptr.down = false; if (e.pointerType === 'touch') ptr.on = false; });
+  });
+  document.addEventListener('mouseout', function (e) { if (!e.relatedTarget) ptr.on = false; });
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for (var q = 0; q < pile.length; q++) {
+      var p = pile[q];
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(p.sx * p.s, p.s * 0.8);
+      ctx.globalAlpha = 0.85 * Math.min(1, p.age * 3) * Math.max(0, Math.min(1, (p.life + 3 - p.age) / 3));
+      ctx.fillStyle = p.c; ctx.fill(PETAL);
+      ctx.restore();
+    }
+    for (var i = 0; i < petals.length; i++) {
+      var l = petals[i];
+      var fx = Math.cos(l.flip);                       // fluttering: turns edge-on, then shows its paler back
+      var sx = (Math.abs(fx) < 0.12 ? 0.12 * (fx < 0 ? -1 : 1) : fx) * l.s;
+      ctx.save();
+      ctx.translate(l.x, l.y); ctx.rotate(l.rot); ctx.scale(sx, l.s);
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = l.c[fx >= 0 ? 0 : 1]; ctx.fill(PETAL);
+      ctx.strokeStyle = 'rgba(200, 90, 120, .25)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke(VEIN);
+      ctx.restore();
+    }
+  }
+
+  function loop(now) {
+    if (!running) return;
+    var dt = Math.min(0.05, (now - last) / 1000 || 0);
+    last = now;
+    step(dt); draw();
+    requestAnimationFrame(loop);
+  }
+  function start() { if (running || reduce) return; running = true; last = performance.now(); requestAnimationFrame(loop); }
+  function stop() { running = false; }
+
+  window.addEventListener('resize', resize);
+  if (narrow.addEventListener) narrow.addEventListener('change', function () { petals = []; resize(); });
+  if (dark.addEventListener) dark.addEventListener('change', function () { petals = []; pile = []; resize(); });
+  document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+
+  if (reduce && narrow.matches) { cv.style.display = 'none'; return; }
+  resize();
+  start();
+})();
+</script>
 </body>
 </html>
